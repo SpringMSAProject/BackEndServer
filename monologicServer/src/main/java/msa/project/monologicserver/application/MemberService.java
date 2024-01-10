@@ -1,8 +1,8 @@
 package msa.project.monologicserver.application;
 
 import lombok.RequiredArgsConstructor;
-import msa.project.monologicserver.domain.Member;
-import msa.project.monologicserver.domain.MemberRepository;
+import msa.project.monologicserver.domain.MemberEx;
+import msa.project.monologicserver.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ public class MemberService {
 
     @Transactional
     public void setAnyMember(){
-        memberRepository.save(Member.builder().userId("test").password("1234").build());
+        memberRepository.save(MemberEx.builder().userId("test").password("1234").build());
     }
 
 }
