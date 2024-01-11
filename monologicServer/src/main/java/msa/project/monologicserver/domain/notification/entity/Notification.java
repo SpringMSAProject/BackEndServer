@@ -3,10 +3,8 @@ package msa.project.monologicserver.domain.notification.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.common.entity.BaseTimeEntity;
 import msa.project.monologicserver.domain.member.entity.Member;
-
-import java.time.LocalDateTime;
+import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

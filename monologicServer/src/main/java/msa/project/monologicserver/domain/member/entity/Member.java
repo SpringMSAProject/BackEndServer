@@ -1,17 +1,16 @@
 package msa.project.monologicserver.domain.member.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.common.entity.BaseTimeEntity;
-
-import java.time.LocalDateTime;
+import lombok.*;
+import msa.project.monologicserver.global.entity.BaseTimeEntity;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -25,6 +24,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "email")
     private String email;
 
+    @Setter
     @Column(name = "password")
     private String password;
 
@@ -46,23 +46,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "role")
     private String role;
 
+    @ColumnDefault("0")
+    @Comment("사용 여부 0:사용, 9:삭제")
     @Column(name = "use_yn")
     private int useYn;
 
-    @Builder
-    public Member(Long memberId, String oauthId, String email, String password,
-                  String name, String nickname, String address, String dealLocation,
-                  String phoneNo, String role, int useYn) {
-        this.memberId = memberId;
-        this.oauthId = oauthId;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.nickname = nickname;
-        this.address = address;
-        this.dealLocation = dealLocation;
-        this.phoneNo = phoneNo;
-        this.role = role;
-        this.useYn = useYn;
-    }
 }

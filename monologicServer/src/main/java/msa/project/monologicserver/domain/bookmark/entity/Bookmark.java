@@ -1,19 +1,16 @@
-package msa.project.monologicserver.domain;
+package msa.project.monologicserver.domain.bookmark.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import msa.project.monologicserver.domain.member.entity.Member;
 import msa.project.monologicserver.domain.product.entity.Product;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Likes {
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
-    private Long likeId;
+    @Column(name = "bookmark_id")
+    private Long bookmarkId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

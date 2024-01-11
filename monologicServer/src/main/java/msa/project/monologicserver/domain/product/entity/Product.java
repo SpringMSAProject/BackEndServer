@@ -3,10 +3,8 @@ package msa.project.monologicserver.domain.product.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.common.entity.BaseTimeEntity;
 import msa.project.monologicserver.domain.member.entity.Member;
-
-import java.math.BigDecimal;
+import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,13 +31,14 @@ public class Product extends BaseTimeEntity {
     private String description;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private int price;
+//    private BigDecimal price;
 
     @Column(name = "view_cnt")
-    private Long viewCnt;
+    private int viewCnt;
 
     @Column(name = "like_cnt")
-    private Long likeCnt;
+    private int likeCnt;
 
     @Column(name = "location")
     private String location;

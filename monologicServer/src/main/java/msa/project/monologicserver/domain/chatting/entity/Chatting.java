@@ -1,13 +1,11 @@
-package msa.project.monologicserver.domain;
+package msa.project.monologicserver.domain.chatting.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.common.entity.BaseTimeEntity;
 import msa.project.monologicserver.domain.member.entity.Member;
 import msa.project.monologicserver.domain.product.entity.Product;
-
-import java.time.LocalDateTime;
+import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
