@@ -20,6 +20,7 @@ public class ProductImage extends BaseTimeEntity {
 
     private String name;
 
+    //확장자
     private String ext;
 
     private String url;
