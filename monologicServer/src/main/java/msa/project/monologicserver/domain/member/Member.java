@@ -1,4 +1,4 @@
-package msa.project.monologicserver.domain.member.entity;
+package msa.project.monologicserver.domain.member;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import msa.project.monologicserver.domain.memberprofile.MemberProfile;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
 

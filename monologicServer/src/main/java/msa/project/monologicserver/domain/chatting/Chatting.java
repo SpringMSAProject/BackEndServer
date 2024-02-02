@@ -3,7 +3,7 @@ package msa.project.monologicserver.domain.chatting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.member.entity.Member;
+import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.product.entity.Product;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 

@@ -3,7 +3,7 @@ package msa.project.monologicserver.domain.notification;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.domain.member.entity.Member;
+import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity

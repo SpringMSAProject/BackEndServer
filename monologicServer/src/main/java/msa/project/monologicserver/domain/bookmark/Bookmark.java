@@ -1,7 +1,7 @@
 package msa.project.monologicserver.domain.bookmark;
 
 import jakarta.persistence.*;
-import msa.project.monologicserver.domain.member.entity.Member;
+import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.product.entity.Product;
 
 @Entity

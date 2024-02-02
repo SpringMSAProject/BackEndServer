@@ -1,10 +1,9 @@
 package msa.project.monologicserver.domain.memberprofile;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
@@ -15,6 +14,18 @@ public class MemberProfile extends BaseTimeEntity {
     @Id
     @Column(name="id")
     private String id;
+
+    private String name;
+    private String nickname;
+    private String phone;
+    private String address;
+
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @Setter
+    private Member member;
+
 
 
 
