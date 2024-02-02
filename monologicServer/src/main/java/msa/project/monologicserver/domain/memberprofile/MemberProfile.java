@@ -20,6 +20,8 @@ public class MemberProfile extends BaseTimeEntity {
     private String phone;
     private String address;
 
+
+    // 일대일관계 복합키
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
