@@ -12,7 +12,7 @@ public class Product extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
+    @Column(name = "id")
     private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,34 +23,25 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "category_id")
     private Category categoryId;
 
-    @Column(name = "title")
     private String title;
 
     @Lob
     @Column(name = "description")
     private String description;
 
-    @Column(name = "price")
     private int price;
-//    private BigDecimal price;
 
-    @Column(name = "view_cnt")
-    private int viewCnt;
+    private int viewCount;
 
-    @Column(name = "like_cnt")
-    private int likeCnt;
+    private int likeCount;
 
-    @Column(name = "location")
     private String location;
 
-    @Column(name = "condition")
     private String condition;
 
-    @Column(name = "status")
     private String status;
 
     @Lob
-    @Column(name = "thumb_img")
     private String thumbImg;
 
 }
