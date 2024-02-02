@@ -1,9 +1,9 @@
-package msa.project.monologicserver.domain.chatting;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface ChattingRepository extends JpaRepository<Chatting,Long> {
-
-}
+//package msa.project.monologicserver.domain.chatting;
+//
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.stereotype.Repository;
+//
+//@Repository
+//public interface ChattingRepository extends JpaRepository<Chatting,Long> {
+//
+//}

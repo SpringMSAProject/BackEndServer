@@ -1,15 +1,19 @@
-//package msa.project.monologicserver.domain.bookmark;
+//package msa.project.monologicserver.domain.likes;
 //
 //import jakarta.persistence.*;
+//import lombok.AccessLevel;
+//import lombok.NoArgsConstructor;
 //import msa.project.monologicserver.domain.member.Member;
 //import msa.project.monologicserver.domain.product.entity.Product;
 //
 //@Entity
-//public class Bookmark {
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//public class Likes {
 //
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long bookmarkId;
+//    @Column(name = "like_id")
+//    private Long likeId;
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "member_id")
