@@ -1,0 +1,27 @@
+server:
+  port: 1234
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5435/memberDB
+    username: admin
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+logging:
+  level:
+    org.springframework.security: ERROR
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true  # API 요청 지속 시간 표시 (m/s)
+    defaultModelsExpandDepth: -1  # Schema 표시 여부 (기본값: 1 (표시))
