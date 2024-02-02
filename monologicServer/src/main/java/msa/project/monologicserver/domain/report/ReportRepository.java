@@ -1,6 +1,5 @@
-package msa.project.monologicserver.domain.report.repository;
+package msa.project.monologicserver.domain.report;
 
-import msa.project.monologicserver.domain.report.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

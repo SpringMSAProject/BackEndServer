@@ -1,4 +1,4 @@
-package msa.project.monologicserver.domain.bookmark.entity;
+package msa.project.monologicserver.domain.bookmark;
 
 import jakarta.persistence.*;
 import msa.project.monologicserver.domain.member.entity.Member;

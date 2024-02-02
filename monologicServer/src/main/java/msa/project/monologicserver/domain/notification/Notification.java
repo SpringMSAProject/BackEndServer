@@ -1,4 +1,4 @@
-package msa.project.monologicserver.domain.notification.entity;
+package msa.project.monologicserver.domain.notification;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

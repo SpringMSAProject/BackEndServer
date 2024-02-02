@@ -1,6 +1,5 @@
-package msa.project.monologicserver.domain.review.repository;
+package msa.project.monologicserver.domain.review;
 
-import msa.project.monologicserver.domain.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package msa.project.monologicserver.domain.review.entity;
+package msa.project.monologicserver.domain.chatting;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,26 +9,30 @@ import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review extends BaseTimeEntity {
+public class Chatting extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
-    private Long reviewId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id")
-    private Member reviewerId;
+    @Column(name = "message_id")
+    private Long messageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product productId;
 
-    @Column(name = "rating")
-    private int rating;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private Member senderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private Member receiverId;
 
     @Lob
-    @Column(name = "comment", columnDefinition = "TEXT")
-    private String comment;
+    @Column(name = "message_content", columnDefinition = "TEXT")
+    private String messageContent;
+
+    @Column(name = "is_read")
+    private Boolean isRead;
 
 }
