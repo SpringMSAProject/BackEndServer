@@ -19,11 +19,10 @@ import java.time.LocalDateTime;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
-    @Column(columnDefinition = "TIMESTAMP", name = "created_dt")
-    @Comment("생성일")
-    private LocalDateTime createdDt;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(columnDefinition = "TIMESTAMP", name = "modified_dt")
-    private LocalDateTime modifiedDt;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime updatedAt;
 }
