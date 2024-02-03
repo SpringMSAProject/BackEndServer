@@ -27,4 +27,6 @@ public class ProductImage extends BaseTimeEntity {
 
     private String status;
 
+    private String deletedAt;
+
 }

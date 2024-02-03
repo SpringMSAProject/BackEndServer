@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseTimeEntity {
@@ -43,5 +45,7 @@ public class Product extends BaseTimeEntity {
 
     @Lob
     private String thumbImg;
+
+    private LocalDateTime deletedAt;
 
 }
