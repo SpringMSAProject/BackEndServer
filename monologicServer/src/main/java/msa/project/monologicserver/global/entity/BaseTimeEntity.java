@@ -25,5 +25,4 @@ public abstract class BaseTimeEntity {
     @LastModifiedDate
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
-    //
 }
