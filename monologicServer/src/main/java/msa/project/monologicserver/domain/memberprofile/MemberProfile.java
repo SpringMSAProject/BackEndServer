@@ -29,7 +29,4 @@ public class MemberProfile extends BaseTimeEntity {
     private Member member;
 
 
-
-
-
 }
