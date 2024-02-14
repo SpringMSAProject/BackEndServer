@@ -26,7 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+//    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 
     // lombok
@@ -34,8 +34,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // Security 6.2.0
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    testImplementation 'org.springframework.security:spring-security-test'
 
     // JWT (JWT version of Spring Boot 3.x)
 //	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

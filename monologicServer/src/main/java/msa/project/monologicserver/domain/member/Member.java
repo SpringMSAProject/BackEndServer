@@ -17,11 +17,15 @@ import lombok.Setter;
 import msa.project.monologicserver.domain.memberprofile.MemberProfile;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE member SET deletedAt = now() WHERE id = ?")
+@Where(clause = "deleted_at is not null")
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -32,8 +36,7 @@ public class Member extends BaseTimeEntity {
 
     private String password;
 
-    @ColumnDefault("true")
-    private Boolean isActivated;
+    private final boolean isActivated = true;
 
     private LocalDateTime deletedAt;
 
@@ -47,4 +50,7 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.password = password;
     }
+
+
+
 }

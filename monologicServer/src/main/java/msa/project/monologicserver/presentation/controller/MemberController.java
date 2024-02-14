@@ -4,14 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.application.MemberService;
-import msa.project.monologicserver.global.dto.CommonResult;
-import msa.project.monologicserver.global.dto.ResponseService;
-import msa.project.monologicserver.global.dto.SingleResult;
-import msa.project.monologicserver.global.message.CommonMessage;
+import msa.project.monologicserver.global.ApiResponse;
 import msa.project.monologicserver.presentation.dto.MemberJoinRequestDTO;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/member")
@@ -20,15 +15,12 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-    private final ResponseService responseService;
-
 
     //Create
     @PostMapping("/")
     @Operation(summary = "C", description = "회원 등록")
-    public SingleResult<String> create(@RequestBody MemberJoinRequestDTO joinRequestDTO){
-
-        return responseService.getSingleResult(memberService.createMember(joinRequestDTO),CommonMessage.USER_CREATE_SUCCESS);
+    public ApiResponse<String> create(@RequestBody MemberJoinRequestDTO joinRequestDTO){
+        return ApiResponse.success(memberService.createMember(joinRequestDTO));
     }
 
 
@@ -40,11 +32,12 @@ public class MemberController {
 
     //Delete
 
-//    @PostMapping("/read")
-//    @Operation(summary = "전체 조회", description = "Swagger Test 회원 전체 조회")
-//    public SingleResult<List<MemberResponseDto>> getAllMember() {
-//        return responseService.getSingleResult(memberService.getAllMember(), CommonMessage.USER_SELECT_SUCCESS);
-//    }
+    @DeleteMapping("/{memberId}")
+    @Operation(summary = "D", description = "회원 삭제")
+    public ApiResponse<String> delete(@PathVariable String memberId){
+        return ApiResponse.success(memberService.deleteMember(memberId));
+    }
+
 //
 //    @PostMapping("/read/{id}")
 //    @Operation(summary = "조회", description = "swagger Test 회원 조회")
