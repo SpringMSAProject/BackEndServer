@@ -1,5 +1,6 @@
 package msa.project.monologicserver.domain.member;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,9 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     @EntityGraph(attributePaths = {"memberProfile"})
     Optional<Member> findMemberByIdAndDeletedAtIsNull(String id);
+
+    @EntityGraph(attributePaths = {"memberProfile"})
+    List<Member> findAllByDeletedAtIsNull();
+
+    Optional<Member> findByIdAndDeletedAtIsNull(String memberId);
 }

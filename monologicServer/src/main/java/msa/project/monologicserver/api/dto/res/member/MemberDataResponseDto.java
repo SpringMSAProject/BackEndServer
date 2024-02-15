@@ -24,11 +24,10 @@ public record MemberDataResponseDto (
         return new MemberDataResponseDto(
             member.getId(),
             member.getEmail(),
-//            member.getMemberProfile().getName(),
-//            member.getMemberProfile().getNickname(),
-//            member.getMemberProfile().getPhone(),
-//            member.getMemberProfile().getAddress(),
-            null,null,null,null,
+            member.getMemberProfile().getName(),
+            member.getMemberProfile().getNickname(),
+            member.getMemberProfile().getPhone(),
+            member.getMemberProfile().getAddress(),
             member.isActivated(),
             member.getCreatedAt(),
             member.getUpdatedAt()

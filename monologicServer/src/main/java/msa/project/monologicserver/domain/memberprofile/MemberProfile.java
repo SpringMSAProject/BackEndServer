@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 import org.hibernate.annotations.OnDelete;
@@ -19,8 +20,7 @@ import org.springframework.cglib.core.Local;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member_profile")
-@OnDelete(action = OnDeleteAction.CASCADE)
-//@SQLDelete(sql = "UPDATE member_profile SET deleted_at = now() WHERE id = ?")
+@SQLDelete(sql = "UPDATE member_profile SET deleted_at = now() WHERE member_id = ?")
 public class MemberProfile extends BaseTimeEntity {
 
     @Id
@@ -34,7 +34,8 @@ public class MemberProfile extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     // 일대일관계 복합키
-//    @MapsId
+
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @Setter
@@ -56,5 +57,12 @@ public class MemberProfile extends BaseTimeEntity {
 //        this.member = member;
 //        this.member.setMemberProfile(this);
 //    }
+
+    public void update(MemberUpdateRequestDTO requestDTO){
+        this.name=requestDTO.name();
+        this.nickname= requestDTO.nickname();
+        this.phone=requestDTO.phone();
+        this.address=requestDTO.address();
+    }
 
 }

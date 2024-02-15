@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
 import msa.project.monologicserver.api.dto.res.member.MemberDataResponseDto;
 import msa.project.monologicserver.application.MemberService;
 import msa.project.monologicserver.global.ApiResponse;
@@ -36,15 +37,19 @@ public class MemberController {
     //Read - all
     @GetMapping("/")
     @Operation(summary = "R", description = "회원 목록 조회")
-    public ApiResponse<List<MemberDataResponseDto>> read(){
+    public ApiResponse<List<MemberDataResponseDto>> readAll(){
         return ApiResponse.success(memberService.readAllMember());
     }
     //Update
     @PutMapping("/{memberId}")
     @Operation(summary = "U", description = "회원 목록 조회")
-    public ApiResponse<String> update(@PathVariable String memberId){
-        return ApiResponse.success(memberService.updateMember(memberId));
+    public ApiResponse<String> update(
+        @PathVariable String memberId,
+        @RequestBody MemberUpdateRequestDTO requestDTO
+    ){
+        return ApiResponse.success(memberService.updateMember(memberId, requestDTO));
     }
+
     //Delete
 
     @DeleteMapping("/{memberId}")

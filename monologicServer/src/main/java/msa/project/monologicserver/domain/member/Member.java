@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
 import msa.project.monologicserver.domain.memberprofile.MemberProfile;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 import org.hibernate.annotations.ColumnDefault;
@@ -30,7 +31,7 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE id = ?")
 public class Member extends BaseTimeEntity {
 
-    @Id @Column(name = "member_id")
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -45,7 +46,7 @@ public class Member extends BaseTimeEntity {
 
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-//    @PrimaryKeyJoinColumn
+    @PrimaryKeyJoinColumn
     @Setter
     private MemberProfile memberProfile;
 
@@ -57,5 +58,7 @@ public class Member extends BaseTimeEntity {
     }
 
 
-
+    public void update(MemberUpdateRequestDTO requestDTO) {
+        this.email=requestDTO.email();
+    }
 }

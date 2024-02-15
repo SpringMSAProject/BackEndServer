@@ -1,8 +1,10 @@
 package msa.project.monologicserver.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.member.MemberJoinRequestDTO;
+import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
 import msa.project.monologicserver.api.dto.res.member.MemberDataResponseDto;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
@@ -37,20 +39,36 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberDataResponseDto readMember(String memberId) {
-        return MemberDataResponseDto.fromEntity(memberRepository.findMemberByIdAndDeletedAtIsNull(memberId)
-            .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND)));
+        return MemberDataResponseDto.fromEntity(
+            memberRepository.findMemberByIdAndDeletedAtIsNull(memberId)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND)));
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemberDataResponseDto> readAllMember() {
+        return memberRepository.findAllByDeletedAtIsNull().stream()
+            .map(MemberDataResponseDto::fromEntity)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String updateMember(String memberId, MemberUpdateRequestDTO requestDTO) {
+        final Member member = memberRepository.findByIdAndDeletedAtIsNull(memberId)
+            .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
+        MemberProfile memberProfile = memberProfileRepository.findByIdAndDeletedAtIsNull(memberId)
+            .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
+        member.update(requestDTO);
+        memberProfile.update(requestDTO);
+
+        return memberId;
     }
 
     @Transactional
     public String deleteMember(String memberId) {
-        // id로 member 조회
         final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
 
-        System.out.println(member.getDeletedAt());
         if (member.getDeletedAt() == null) {
-            System.out.println("삭제처리시작");
-
             memberRepository.delete(member);
         } else {
             throw new BusinessException(CommonErrorCode.ALREADY_DELETED);
@@ -63,7 +81,6 @@ public class MemberService {
 
     private void userEmailValidationCheck(MemberJoinRequestDTO joinRequestDTO) {
         if (memberRepository.existsByEmail(joinRequestDTO.email())) {
-            System.out.println("hi");
             throw new BusinessException(CommonErrorCode.USER_MANAGE_USER_EXISTENCE);
         }
     }
@@ -77,13 +94,4 @@ public class MemberService {
     }
 
 
-    public String updateMember(String memberId) {
-        return null;
-    }
-
-    public List<MemberDataResponseDto> readAllMember() {
-
-
-        return null;
-    }
 }
