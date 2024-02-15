@@ -25,7 +25,7 @@ public class ControllerAdvice {
     private final static String SUFFIX = ": {}";
 
     @ExceptionHandler({BusinessException.class})
-    protected ResponseEntity<ApiResponse> handleObtServerException(BusinessException e) {
+    protected ResponseEntity<ApiResponse<?>> handleObtServerException(BusinessException e) {
         errorLog("Server Exception occurred", e);
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(ApiResponse.failure(e.getErrorCode()));
     }
@@ -65,7 +65,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleException(Exception e) {
+    public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
         errorLog("handleException", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(ApiResponse.failure(CommonErrorCode.INTERNAL_SERVER_ERROR));
     }
