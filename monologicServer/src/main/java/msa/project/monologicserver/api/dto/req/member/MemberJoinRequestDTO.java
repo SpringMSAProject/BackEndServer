@@ -1,11 +1,12 @@
-package msa.project.monologicserver.presentation.dto;
+package msa.project.monologicserver.api.dto.req.member;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.memberprofile.MemberProfile;
 
 public record MemberJoinRequestDTO(
-    @NotBlank String email,
+    @NotBlank @Email String email,
     @NotBlank String password,
     @NotBlank String name,
     @NotBlank String nickname,

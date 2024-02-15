@@ -49,6 +49,7 @@ public enum CommonErrorCode implements ErrorCode {
     private final String message;
     private final int status;
     private final LogType logType;
+
     CommonErrorCode(final String code,LogType logType,final int status, final String message) {
         this.message = message;
         this.logType = logType;

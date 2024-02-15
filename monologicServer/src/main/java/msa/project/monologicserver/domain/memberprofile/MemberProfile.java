@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import msa.project.monologicserver.domain.member.Member;
@@ -12,11 +13,14 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.cglib.core.Local;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member_profile")
 @OnDelete(action = OnDeleteAction.CASCADE)
+//@SQLDelete(sql = "UPDATE member_profile SET deleted_at = now() WHERE id = ?")
 public class MemberProfile extends BaseTimeEntity {
 
     @Id
@@ -27,10 +31,10 @@ public class MemberProfile extends BaseTimeEntity {
     private String nickname;
     private String phone;
     private String address;
-
+    private LocalDateTime deletedAt;
 
     // 일대일관계 복합키
-    @MapsId
+//    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @Setter
@@ -45,12 +49,12 @@ public class MemberProfile extends BaseTimeEntity {
         this.phone=phone;
     }
 
-    public void addMember(Member member) {
-        if (this.member != null) {
-            this.member.setMemberProfile(null);
-        }
-        this.member = member;
-        this.member.setMemberProfile(this);
-    }
+//    public void addMember(Member member) {
+//        if (this.member != null) {
+//            this.member.setMemberProfile(null);
+//        }
+//        this.member = member;
+//        this.member.setMemberProfile(this);
+//    }
 
 }

@@ -26,7 +26,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler({BusinessException.class})
     protected ResponseEntity<ApiResponse> handleObtServerException(BusinessException e) {
-        errorLog("OBT Server Exception occurred", e);
+        errorLog("Server Exception occurred", e);
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(ApiResponse.failure(e.getErrorCode()));
     }
 

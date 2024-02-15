@@ -1,11 +1,14 @@
 package msa.project.monologicserver.domain.member;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -24,11 +27,10 @@ import org.hibernate.annotations.Where;
 @Getter
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE member SET deletedAt = now() WHERE id = ?")
-@Where(clause = "deleted_at is not null")
+@SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE id = ?")
 public class Member extends BaseTimeEntity {
 
-    @Id
+    @Id @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -40,10 +42,13 @@ public class Member extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
+
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+//    @PrimaryKeyJoinColumn
     @Setter
     private MemberProfile memberProfile;
+
 
     @Builder
     public Member(String email, String password){

@@ -1,13 +1,15 @@
 package msa.project.monologicserver.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import msa.project.monologicserver.api.dto.req.member.MemberJoinRequestDTO;
+import msa.project.monologicserver.api.dto.res.member.MemberDataResponseDto;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
 import msa.project.monologicserver.domain.memberprofile.MemberProfile;
 import msa.project.monologicserver.domain.memberprofile.MemberProfileRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
-import msa.project.monologicserver.presentation.dto.MemberJoinRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,17 +35,24 @@ public class MemberService {
         return member.getId();
     }
 
+    @Transactional(readOnly = true)
+    public MemberDataResponseDto readMember(String memberId) {
+        return MemberDataResponseDto.fromEntity(memberRepository.findMemberByIdAndDeletedAtIsNull(memberId)
+            .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND)));
+    }
+
     @Transactional
-    public String deleteMember(String memberId){
+    public String deleteMember(String memberId) {
         // id로 member 조회
         final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
 
         System.out.println(member.getDeletedAt());
-        if(member.getDeletedAt()==null){
+        if (member.getDeletedAt() == null) {
+            System.out.println("삭제처리시작");
+
             memberRepository.delete(member);
-        }
-        else{
+        } else {
             throw new BusinessException(CommonErrorCode.ALREADY_DELETED);
         }
 
@@ -51,20 +60,16 @@ public class MemberService {
 
     }
 
-    private void memberDeletedValidationCheck(String memberId){
-
-    }
-
 
     private void userEmailValidationCheck(MemberJoinRequestDTO joinRequestDTO) {
-        if(memberRepository.existsByEmail(joinRequestDTO.email())){
+        if (memberRepository.existsByEmail(joinRequestDTO.email())) {
             System.out.println("hi");
             throw new BusinessException(CommonErrorCode.USER_MANAGE_USER_EXISTENCE);
         }
     }
 
-    private MemberProfile saveMemberProfile(MemberProfile memberProfile) {
-        return memberProfileRepository.save(memberProfile);
+    private void saveMemberProfile(MemberProfile memberProfile) {
+        memberProfileRepository.save(memberProfile);
     }
 
     private Member saveMember(MemberJoinRequestDTO joinRequestDTO) {
@@ -72,6 +77,13 @@ public class MemberService {
     }
 
 
+    public String updateMember(String memberId) {
+        return null;
+    }
+
+    public List<MemberDataResponseDto> readAllMember() {
 
 
+        return null;
+    }
 }
