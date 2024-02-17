@@ -43,6 +43,7 @@ public class Member extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
+    //
 
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
