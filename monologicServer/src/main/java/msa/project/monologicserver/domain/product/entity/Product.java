@@ -1,6 +1,8 @@
 package msa.project.monologicserver.domain.product.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import msa.project.monologicserver.domain.member.Member;
@@ -14,16 +16,14 @@ public class Product extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long productId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category categoryId;
+    @OneToMany(mappedBy="product",fetch = FetchType.LAZY)
+    private List<Category> categories = new ArrayList<>();
 
     private String title;
 
