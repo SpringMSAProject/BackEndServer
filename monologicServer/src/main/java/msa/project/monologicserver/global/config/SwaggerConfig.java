@@ -20,7 +20,7 @@ public class SwaggerConfig {
     enum Menu {
 
         MEMBER("회원", "/member/**"),
-        PRODUCT("상품", "/ex"),
+        PRODUCT("상품", "/product/**"),
         PRODUCT_IMGS("상품이미지", "/ex"),
         CATEGORY("카테고리", "/ex"),
         CHATTING("채팅", "/ex"),

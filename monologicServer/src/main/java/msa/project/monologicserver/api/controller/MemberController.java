@@ -3,6 +3,8 @@ package msa.project.monologicserver.api.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
@@ -23,7 +25,7 @@ public class MemberController {
     //Create
     @PostMapping("/")
     @Operation(summary = "C", description = "회원 등록")
-    public ApiResponse<String> create(@RequestBody MemberJoinRequestDTO joinRequestDTO){
+    public ApiResponse<String> create(@Valid @RequestBody MemberJoinRequestDTO joinRequestDTO){
         return ApiResponse.success(memberService.createMember(joinRequestDTO));
     }
 
@@ -45,7 +47,7 @@ public class MemberController {
     @Operation(summary = "U", description = "회원 목록 조회")
     public ApiResponse<String> update(
         @PathVariable String memberId,
-        @RequestBody MemberUpdateRequestDTO requestDTO
+        @Valid @RequestBody MemberUpdateRequestDTO requestDTO
     ){
         return ApiResponse.success(memberService.updateMember(memberId, requestDTO));
     }

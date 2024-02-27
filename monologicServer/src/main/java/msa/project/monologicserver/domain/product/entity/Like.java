@@ -2,6 +2,7 @@ package msa.project.monologicserver.domain.product.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
@@ -22,4 +23,10 @@ public class Like extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member memberId;
+
+    @Builder
+    public Like(Product productId, Member memberId) {
+        this.productId = productId;
+        this.memberId = memberId;
+    }
 }
