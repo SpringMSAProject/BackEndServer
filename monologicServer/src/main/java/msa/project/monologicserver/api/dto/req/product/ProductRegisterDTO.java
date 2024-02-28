@@ -8,7 +8,7 @@ import msa.project.monologicserver.domain.product.entity.Category;
 import msa.project.monologicserver.domain.product.entity.Product;
 
 public record ProductRegisterDTO (
-    @Getter @NotBlank String category,
+    @NotNull Long category,
     @NotBlank String title,
     @NotBlank String description,
     @NotNull int price,
@@ -31,4 +31,5 @@ public record ProductRegisterDTO (
                 .thumbImg(this.thumbImg)
                 .build();
     }
+
 }

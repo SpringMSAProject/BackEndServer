@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
@@ -73,5 +74,16 @@ public class Product extends BaseTimeEntity {
 
         public void likeCountMinusOne() {
         likeCount--;
+    }
+
+    public void update(ProductRegisterDTO productRegisterDTO, Category category) {
+        this.categoryId = category;
+        this.title = productRegisterDTO.title();
+        this.description = productRegisterDTO.description();
+        this.price = productRegisterDTO.price();
+        this.location = productRegisterDTO.location();
+        this.condition = productRegisterDTO.condition();
+        this.status = productRegisterDTO.status();
+        this.thumbImg = productRegisterDTO.thumbImg();
     }
 }
