@@ -41,9 +41,15 @@ public enum CommonErrorCode implements ErrorCode {
     USER_MANAGE_USER_NOT_PHONE_MEMBER("COMMON_001",LogType.ERROR,500, "전화번호를 정확히 입력해주세요.(01012341234)"),
     WEATHER_NOT_FOUND("COMMON_001",LogType.ERROR,500, "날씨 정보를 찾지 못했습니다."),
 
+    PRODUCT_IMAGE_CANNOT_EMPTY("COMMON_001",LogType.ERROR,500,"이미지를 적어도 한 개는 등록해야 합니다."),
+
+
+
+
     ALREADY_DELETED("COMMON_001",LogType.ERROR,500, "이미 삭제된 회원 입니다."),
     CANNOT_UPDATE_DELETED_POST("COMMON_001",LogType.ERROR,500, "삭제된 회원은 수정할 수 없습니다."),
-    BAD_REQUEST("COMMON_001",LogType.ERROR,400 , "요청이 유효하지 않습니다.");
+    BAD_REQUEST("COMMON_001",LogType.ERROR,400 , "요청이 유효하지 않습니다."),
+    LIST_CANNOT_EMPTY("COMMON_001",LogType.ERROR ,400,"파일을 적어도 한 개는 입력해야 합니다." );
 
     private final String code;
     private final String message;
