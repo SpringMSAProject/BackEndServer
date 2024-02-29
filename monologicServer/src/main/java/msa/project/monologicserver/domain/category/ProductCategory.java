@@ -10,7 +10,7 @@ import msa.project.monologicserver.domain.product.entity.Product;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category {
+public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Category {
 
 
     @Builder
-    public Category(CategoryType category, Product product) {
+    public ProductCategory(CategoryType category, Product product) {
         this.category = category;
         this.product = product;
     }

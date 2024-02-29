@@ -2,7 +2,6 @@ package msa.project.monologicserver.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.awt.print.Pageable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductFilteredRequestDTO;
@@ -12,6 +11,7 @@ import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +49,7 @@ public class ProductController {
     @GetMapping("/")
     @Operation(summary = "R", description = "상품 전체 조회")
     public ApiResponse<List<FilteredProductResponseDTO>> getAllProduct(
-        @PageableDefault(size=10)Pageable pageable,
+        @PageableDefault(size=10) Pageable pageable,
         @RequestBody ProductFilteredRequestDTO requestDto
     ) {
         return ApiResponse.success(productService.getAllProduct(pageable, requestDto));

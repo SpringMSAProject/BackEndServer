@@ -3,7 +3,6 @@ package msa.project.monologicserver.application;
 
 import static msa.project.monologicserver.global.validation.ListValidation.listValidation;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductFilteredRequestDTO;
@@ -11,7 +10,7 @@ import msa.project.monologicserver.api.dto.req.product.ProductInsertRequestDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.api.dto.res.product.FilteredProductResponseDTO;
 import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
-import msa.project.monologicserver.domain.category.Category;
+import msa.project.monologicserver.domain.category.ProductCategory;
 import msa.project.monologicserver.domain.category.CategoryRepository;
 import msa.project.monologicserver.domain.category.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Product;
@@ -20,6 +19,7 @@ import msa.project.monologicserver.domain.product.entity.ProductImageRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,7 +82,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDTO getProduct(Long productId) {
         final Product product = findProduct(productId);
-        final List<Category> categories = categoryRepository.findByProductId(productId);
+        final List<ProductCategory> categories = categoryRepository.findByProductId(productId);
         final List<ProductImage> images = productImageRepository.findByProductId(productId);
         return new ProductResponseDTO(
             product.getId(),
@@ -94,7 +94,7 @@ public class ProductService {
             product.getCondition(),
             product.getStatus(),
             product.getThumbImg(),
-            categories.stream().map(Category::getCategory).toList(),
+            categories.stream().map(ProductCategory::getCategory).toList(),
             images.stream().map(ProductImage::getUrl).toList()
         );
     }
@@ -103,8 +103,7 @@ public class ProductService {
     public List<FilteredProductResponseDTO> getAllProduct(Pageable pageable,
         ProductFilteredRequestDTO requestDto) {
 
-
-        return null;
+        return productRepository.filteredProducts(pageable, requestDto);
     }
 
     private Product findProduct(Long productId) {
@@ -114,8 +113,8 @@ public class ProductService {
 
 
     private void saveCategories(List<CategoryType> categoriesRequestDTO, Product product) {
-        final List<Category> categories = categoriesRequestDTO.stream()
-            .map(i -> Category.builder().category(i).product(product).build())
+        final List<ProductCategory> categories = categoriesRequestDTO.stream()
+            .map(i -> ProductCategory.builder().category(i).product(product).build())
             .toList();
         product.setCategories(categories);
         categoryRepository.saveAll(categories);
@@ -133,7 +132,7 @@ public class ProductService {
         saveCategories(requestDTO.categories(), product);
 
         product.setCategories(requestDTO.categories().stream()
-            .map(i -> Category.builder().category(i).product(product).build())
+            .map(i -> ProductCategory.builder().category(i).product(product).build())
             .toList());
     }
 

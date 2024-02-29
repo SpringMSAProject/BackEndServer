@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
-import msa.project.monologicserver.domain.category.Category;
+import msa.project.monologicserver.domain.category.ProductCategory;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
@@ -52,7 +52,7 @@ public class Product extends BaseTimeEntity {
 
     @OneToMany(mappedBy="product",fetch = FetchType.LAZY)
     @Setter
-    private List<Category> categories = new ArrayList<>();
+    private List<ProductCategory> categories = new ArrayList<>();
 
 
     @Builder
