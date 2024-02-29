@@ -1,22 +1,22 @@
-package msa.project.monologicserver.api.dto.req.product;
+package msa.project.monologicserver.api.dto.res.product;
 
 import java.util.List;
 import msa.project.monologicserver.domain.category.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Condition;
 import msa.project.monologicserver.domain.product.entity.ProductStatus;
-import org.springframework.web.multipart.MultipartFile;
 
-public record ProductUpdateRequestDTO(
+public record ProductResponseDTO(
+    Long productId,
+    Long userId,
     String title,
     String description,
-    int price,
+    Integer price,
     String location,
     Condition condition,
     ProductStatus status,
-
+    String thumbImg,
     List<CategoryType> categories,
-    List<MultipartFile> images
-
+    List<String> images
 ) {
 
 }

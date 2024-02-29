@@ -3,13 +3,17 @@ package msa.project.monologicserver.application;
 
 import static msa.project.monologicserver.global.validation.ListValidation.listValidation;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import msa.project.monologicserver.api.dto.req.product.ProductFilteredRequestDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductInsertRequestDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
-import msa.project.monologicserver.domain.product.entity.Category;
-import msa.project.monologicserver.domain.product.entity.CategoryRepository;
-import msa.project.monologicserver.domain.product.entity.CategoryType;
+import msa.project.monologicserver.api.dto.res.product.FilteredProductResponseDTO;
+import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
+import msa.project.monologicserver.domain.category.Category;
+import msa.project.monologicserver.domain.category.CategoryRepository;
+import msa.project.monologicserver.domain.category.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Product;
 import msa.project.monologicserver.domain.product.entity.ProductImage;
 import msa.project.monologicserver.domain.product.entity.ProductImageRepository;
@@ -29,11 +33,12 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public String addProduct(ProductInsertRequestDTO requestDTO) {
+    public Long addProduct(ProductInsertRequestDTO requestDTO) {
 
         // List는 Valid 어노테이션으로 유효성 검사를 사용할 수 없어 직접 구현.
         listValidation(requestDTO.images());
 
+        // 상품 등록
         final Product product = productRepository.save(requestDTO.of());
 
         // 카테고리 저장
@@ -42,15 +47,94 @@ public class ProductService {
         // 이미지 저장
         saveImage(requestDTO.images(), product);
 
-        return product.getId().toString();
+        return product.getId();
     }
+
+
+    @Transactional
+    public Long deleteProduct(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new BusinessException(CommonErrorCode.PRODUCT_IS_NOT_FOUND);
+        } else {
+            productRepository.deleteById(productId);
+            productImageRepository.deleteAll(productImageRepository.findByProductId(productId));
+        }
+        return productId;
+    }
+
+    @Transactional
+    public Long updateProject(Long productId, ProductUpdateRequestDTO requestDTO) {
+        listValidation(requestDTO.images());
+
+        final Product product = findProduct(productId);
+
+        product.update(requestDTO);
+
+        //카테고리
+        updateCategory(requestDTO, product);
+
+        //이미지
+        updateImage(requestDTO, product);
+
+        return productId;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductResponseDTO getProduct(Long productId) {
+        final Product product = findProduct(productId);
+        final List<Category> categories = categoryRepository.findByProductId(productId);
+        final List<ProductImage> images = productImageRepository.findByProductId(productId);
+        return new ProductResponseDTO(
+            product.getId(),
+            1L,                 /*product.getMember().getId(),*/
+            product.getTitle(),
+            product.getDescription(),
+            product.getPrice(),
+            product.getLocation(),
+            product.getCondition(),
+            product.getStatus(),
+            product.getThumbImg(),
+            categories.stream().map(Category::getCategory).toList(),
+            images.stream().map(ProductImage::getUrl).toList()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<FilteredProductResponseDTO> getAllProduct(Pageable pageable,
+        ProductFilteredRequestDTO requestDto) {
+
+
+        return null;
+    }
+
+    private Product findProduct(Long productId) {
+        return productRepository.findByIdAndDeletedAtIsNull(productId)
+            .orElseThrow(() -> new BusinessException(CommonErrorCode.PRODUCT_IS_NOT_FOUND));
+    }
+
 
     private void saveCategories(List<CategoryType> categoriesRequestDTO, Product product) {
         final List<Category> categories = categoriesRequestDTO.stream()
-            .map(i->Category.builder().category(i).product(product).build())
+            .map(i -> Category.builder().category(i).product(product).build())
             .toList();
         product.setCategories(categories);
         categoryRepository.saveAll(categories);
+    }
+
+
+    private void updateImage(ProductUpdateRequestDTO requestDTO, Product product) {
+        productImageRepository.deleteAllByProductId(product.getId());
+        saveImage(requestDTO.images(), product);
+    }
+
+    private void updateCategory(ProductUpdateRequestDTO requestDTO,
+        Product product) {
+        categoryRepository.deleteAllByProductId(product.getId());
+        saveCategories(requestDTO.categories(), product);
+
+        product.setCategories(requestDTO.categories().stream()
+            .map(i -> Category.builder().category(i).product(product).build())
+            .toList());
     }
 
     private void saveImage(List<MultipartFile> images, Product product) {
@@ -74,47 +158,5 @@ public class ProductService {
                     .build()
             )
         );
-    }
-
-
-    @Transactional
-    public Long deleteProduct(Long productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new BusinessException(CommonErrorCode.PRODUCT_IS_NOT_FOUND);
-        } else {
-            productRepository.deleteById(productId);
-            productImageRepository.deleteAll(productImageRepository.findByProductId(productId));
-        }
-        return productId;
-    }
-
-    public Long updateProject(Long productId, ProductUpdateRequestDTO requestDTO) {
-        final Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new BusinessException(CommonErrorCode.PRODUCT_IS_NOT_FOUND));
-
-        product.update(requestDTO);
-
-        //카테고리
-        updateCategory(productId, requestDTO, product);
-
-        //이미지
-        updateImage(productId, requestDTO, product);
-
-        return productId;
-    }
-
-    private void updateImage(Long productId, ProductUpdateRequestDTO requestDTO, Product product) {
-        productImageRepository.deleteAllByProductId(productId);
-        saveImage(requestDTO.images(), product);
-    }
-
-    private void updateCategory(Long productId, ProductUpdateRequestDTO requestDTO,
-        Product product) {
-        categoryRepository.deleteAllByProductId(productId);
-        saveCategories(requestDTO.categories(), product);
-
-        product.setCategories(requestDTO.categories().stream()
-            .map(i->Category.builder().category(i).product(product).build())
-            .toList());
     }
 }

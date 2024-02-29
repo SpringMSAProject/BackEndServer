@@ -1,8 +1,7 @@
 package msa.project.monologicserver.api.dto.req.product;
 
 import java.util.List;
-import msa.project.monologicserver.domain.product.entity.Category;
-import msa.project.monologicserver.domain.product.entity.CategoryType;
+import msa.project.monologicserver.domain.category.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Condition;
 import msa.project.monologicserver.domain.product.entity.Product;
 import msa.project.monologicserver.domain.product.entity.ProductStatus;
@@ -20,9 +19,9 @@ public record ProductInsertRequestDTO(
 
     List<MultipartFile> images
 
-
 ) {
-    public Product of(){
+
+    public Product of() {
         return Product.builder()
             .title(title)
             .description(description)

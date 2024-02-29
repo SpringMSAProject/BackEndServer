@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
+import msa.project.monologicserver.domain.category.Category;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
@@ -27,7 +28,7 @@ public class Product extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memberId;
+    private Member member;
 
     private String title;
 
@@ -50,13 +51,14 @@ public class Product extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy="product",fetch = FetchType.LAZY)
+    @Setter
     private List<Category> categories = new ArrayList<>();
 
 
     @Builder
-    public Product(Member memberId, String title, String description, int price, String location,
+    public Product(Member member, String title, String description, int price, String location,
         Condition condition, ProductStatus status) {
-        this.memberId = memberId;
+        this.member = member;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -75,7 +77,4 @@ public class Product extends BaseTimeEntity {
     }
 
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
 }

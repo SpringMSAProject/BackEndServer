@@ -3,10 +3,12 @@ package msa.project.monologicserver.domain.product.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "product_image")
 public class ProductImage {

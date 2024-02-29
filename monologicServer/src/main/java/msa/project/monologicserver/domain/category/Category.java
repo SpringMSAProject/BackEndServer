@@ -1,11 +1,14 @@
-package msa.project.monologicserver.domain.product.entity;
+package msa.project.monologicserver.domain.category;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import msa.project.monologicserver.domain.product.entity.Product;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
 
