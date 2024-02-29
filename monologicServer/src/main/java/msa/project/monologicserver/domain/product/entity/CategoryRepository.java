@@ -1,11 +1,9 @@
 package msa.project.monologicserver.domain.product.entity;
 
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductImageRepository extends JpaRepository<ProductImage,Long> {
-
-    List<ProductImage> findByProductId(Long productId);
+public interface CategoryRepository extends JpaRepository<Category,Long> {
 
     void deleteAllByProductId(Long productId);
+
 }

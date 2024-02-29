@@ -17,7 +17,7 @@ public class ProductImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product productId;
+    private Product product;
 
     private String name;
 
@@ -30,7 +30,7 @@ public class ProductImage {
 
     @Builder
     public ProductImage(Product productId, String name, String ext, String url, String status) {
-        this.productId = productId;
+        this.product = productId;
         this.name = name;
         this.ext = ext;
         this.url = url;

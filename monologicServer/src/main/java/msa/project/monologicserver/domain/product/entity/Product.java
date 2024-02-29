@@ -8,14 +8,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE product SET deleted_at = now() WHERE id = ?")
 public class Product extends BaseTimeEntity {
 
     @Id
@@ -62,4 +65,17 @@ public class Product extends BaseTimeEntity {
         this.status = status;
     }
 
+    public void update(ProductUpdateRequestDTO requestDTO) {
+        this.title = requestDTO.title();
+        this.description = requestDTO.description();
+        this.price = requestDTO.price();
+        this.location = requestDTO.location();
+        this.condition = requestDTO.condition();
+        this.status = requestDTO.status();
+    }
+
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
 }

@@ -24,7 +24,7 @@ public class MemberService {
 
 
     @Transactional
-    public String createMember(MemberJoinRequestDTO joinRequestDTO) {
+    public Long createMember(MemberJoinRequestDTO joinRequestDTO) {
         //유효성 검사
         userEmailValidationCheck(joinRequestDTO);
 
@@ -38,7 +38,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberDataResponseDto readMember(String memberId) {
+    public MemberDataResponseDto readMember(Long memberId) {
         return MemberDataResponseDto.fromEntity(
             memberRepository.findMemberByIdAndDeletedAtIsNull(memberId)
                 .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND)));
@@ -52,7 +52,7 @@ public class MemberService {
     }
 
     @Transactional
-    public String updateMember(String memberId, MemberUpdateRequestDTO requestDTO) {
+    public Long updateMember(Long memberId, MemberUpdateRequestDTO requestDTO) {
         final Member member = memberRepository.findByIdAndDeletedAtIsNull(memberId)
             .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
         MemberProfile memberProfile = memberProfileRepository.findByIdAndDeletedAtIsNull(memberId)
@@ -64,7 +64,7 @@ public class MemberService {
     }
 
     @Transactional
-    public String deleteMember(String memberId) {
+    public Long deleteMember(Long memberId) {
         final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
 

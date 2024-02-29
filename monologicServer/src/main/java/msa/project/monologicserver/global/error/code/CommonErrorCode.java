@@ -42,7 +42,7 @@ public enum CommonErrorCode implements ErrorCode {
     WEATHER_NOT_FOUND("COMMON_001",LogType.ERROR,500, "날씨 정보를 찾지 못했습니다."),
 
     PRODUCT_IMAGE_CANNOT_EMPTY("COMMON_001",LogType.ERROR,500,"이미지를 적어도 한 개는 등록해야 합니다."),
-
+    PRODUCT_IS_NOT_FOUND("COMMON_001",LogType.ERROR,500,"상품을 찾지 못했습니다"),
 
 
 

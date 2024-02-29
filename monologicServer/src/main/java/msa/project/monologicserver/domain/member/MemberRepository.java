@@ -4,19 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-public interface MemberRepository extends JpaRepository<Member,Long> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Boolean existsByEmail(String email);
 
-    Optional<Member> findMemberById(String id);
+    Optional<Member> findMemberById(Long id);
 
     @EntityGraph(attributePaths = {"memberProfile"})
-    Optional<Member> findMemberByIdAndDeletedAtIsNull(String id);
+    Optional<Member> findMemberByIdAndDeletedAtIsNull(Long id);
 
     @EntityGraph(attributePaths = {"memberProfile"})
     List<Member> findAllByDeletedAtIsNull();
 
-    Optional<Member> findByIdAndDeletedAtIsNull(String memberId);
+    Optional<Member> findByIdAndDeletedAtIsNull(Long memberId);
 }

@@ -2,6 +2,7 @@ package msa.project.monologicserver.domain.product.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -12,11 +13,17 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CategoryType category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
 
+    @Builder
+    public Category(CategoryType category, Product product) {
+        this.category = category;
+        this.product = product;
+    }
 }

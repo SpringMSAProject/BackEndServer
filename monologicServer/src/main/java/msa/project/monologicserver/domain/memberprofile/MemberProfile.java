@@ -25,7 +25,7 @@ public class MemberProfile extends BaseTimeEntity {
 
     @Id
     @Column(name="id")
-    private String id;
+    private Long id;
 
     private String name;
     private String nickname;

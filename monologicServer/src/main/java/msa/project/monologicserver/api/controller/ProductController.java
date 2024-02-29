@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductInsertRequestDTO;
+import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +31,21 @@ public class ProductController {
         return ApiResponse.success(productService.addProduct(requestDTO));
     }
 
+    @PutMapping("/{productId}")
+    @Operation(summary = "U", description = "상품 갱신")
+    public ApiResponse<Long> updateProduct(
+        @Valid @RequestBody ProductUpdateRequestDTO requestDTO,
+        @Valid @PathVariable Long productId
+    ) {
+        return ApiResponse.success(productService.updateProject(productId, requestDTO));
+    }
+
     @DeleteMapping("/{productId}")
     @Operation(summary = "D", description = "상품 제거")
-    public ApiResponse<String> deleteProduct(
-        @Valid @PathVariable String productId
+    public ApiResponse<Long> deleteProduct(
+        @Valid @PathVariable Long productId
     ) {
-        return ApiResponse.success(productService.deleteProduct(requestDTO));
+        return ApiResponse.success(productService.deleteProduct(productId));
     }
 
 }

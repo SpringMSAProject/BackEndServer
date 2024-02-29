@@ -6,7 +6,7 @@ import lombok.Data;
 import msa.project.monologicserver.domain.member.Member;
 
 public record MemberDataResponseDto (
-    String id,
+    Long id,
     String email,
     String name,
     String nickname,
