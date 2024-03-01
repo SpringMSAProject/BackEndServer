@@ -1,11 +1,15 @@
 package msa.project.monologicserver.domain.product.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Builder
+@Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "product_image")
 public class ProductImage extends BaseTimeEntity {
@@ -16,7 +20,7 @@ public class ProductImage extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product productId;
+    private Product product;
 
     private String name;
 
@@ -27,6 +31,5 @@ public class ProductImage extends BaseTimeEntity {
 
     private String status;
 
-    private String deletedAt;
-
+    private LocalDateTime deletedAt;
 }

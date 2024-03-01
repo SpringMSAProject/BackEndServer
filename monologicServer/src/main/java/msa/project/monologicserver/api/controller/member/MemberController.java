@@ -1,16 +1,16 @@
-package msa.project.monologicserver.api.controller;
+package msa.project.monologicserver.api.controller.member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import msa.project.monologicserver.api.dto.req.member.MemberJoinRequestDTO;
 import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
 import msa.project.monologicserver.api.dto.res.member.MemberDataResponseDto;
-import msa.project.monologicserver.application.MemberService;
+import msa.project.monologicserver.application.member.MemberService;
 import msa.project.monologicserver.global.ApiResponse;
-import msa.project.monologicserver.api.dto.req.member.MemberJoinRequestDTO;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member")

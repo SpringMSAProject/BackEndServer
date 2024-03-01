@@ -1,7 +1,5 @@
-package msa.project.monologicserver.application;
+package msa.project.monologicserver.application.member;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.member.MemberJoinRequestDTO;
 import msa.project.monologicserver.api.dto.req.member.MemberUpdateRequestDTO;
@@ -14,6 +12,9 @@ import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
