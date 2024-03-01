@@ -24,6 +24,7 @@ public class MemberController {
     @PostMapping("/")
     @Operation(summary = "C", description = "회원 등록")
     public ApiResponse<String> create(@RequestBody MemberJoinRequestDTO joinRequestDTO){
+        System.out.println("들어왔어요");
         return ApiResponse.success(memberService.createMember(joinRequestDTO));
     }
 
