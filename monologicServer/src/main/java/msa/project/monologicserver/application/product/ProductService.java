@@ -13,12 +13,15 @@ import msa.project.monologicserver.domain.product.entity.ProductImage;
 import msa.project.monologicserver.domain.product.repository.CategoryRepository;
 import msa.project.monologicserver.domain.product.repository.ProductQueryDslRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
+import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static msa.project.monologicserver.global.error.code.CommonErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,21 +36,19 @@ public class ProductService {
 
     public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
         Member member = memberRepository.findMemberById(productRequestDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
         Category category = categoryRepository.findById(productRequestDTO.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+                .orElseThrow(() -> new BusinessException(INVALID_CATEGORY_ID));
 
         // 상품 및 상품 이미지 생성
         Product product = productRequestDTO.createProduct(member, category);
         List<ProductImage> productImages = product.getImages();
-        ;
 
         // 상품과 상품 이미지 저장
         product.setImages(productImages);
         productRepository.save(product);
 
-        // 응답 DTO 생성
         return ProductResponseDTO.builder()
                 .memberId(productRequestDTO.getMemberId())
                 .categoryId(productRequestDTO.getCategoryId())
@@ -71,18 +72,17 @@ public class ProductService {
 
     public void updateProduct(Long productId, ProductRequestDTO productRequestDTO) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found for ID: " + productId));
+                .orElseThrow(() -> new BusinessException(NO_PRODUCT_MATCHING_ID_FOUND));
 
-        // 상품 이미지 업데이트
         List<ProductImage> updatedImages = product.getImages();
 
         product.setImages(updatedImages);
 
         Member member = memberRepository.findMemberById(productRequestDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
         Category category = categoryRepository.findById(productRequestDTO.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+                .orElseThrow(() -> new BusinessException(INVALID_CATEGORY_ID));
 
         Product updatedProduct = Product.builder()
                 .productId(productId)
@@ -139,6 +139,6 @@ public class ProductService {
 
     private Product getProductById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + productId));
+                .orElseThrow(() -> new BusinessException(NO_PRODUCT_MATCHING_ID_FOUND));
     }
 }
