@@ -1,16 +1,19 @@
 package msa.project.monologicserver.api.controller.product;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductPageRequestDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductRequestDTO;
 import msa.project.monologicserver.api.dto.res.product.ProductPageResponseDTO;
-import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
 import msa.project.monologicserver.application.product.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
-import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/product")
@@ -21,23 +24,23 @@ public class ProductController {
     private final ProductService productService;
 
     // 상품 등록
-    @PostMapping("/")
-    @Operation(summary = "상품 등록", description = "새로운 상품 등록")
-    public ApiResponse<ProductResponseDTO> create(@RequestBody ProductRequestDTO productRequestDTO) {
-        return ApiResponse.success(productService.createProduct(productRequestDTO));
-    }
-
-    // 모든 상품 조회
-    @GetMapping("/")
-    @Operation(summary = "모든 상품 조회", description = "모든 상품 조회")
-    public ApiResponse<Page<ProductPageResponseDTO>> readAll(ProductPageRequestDTO productPageRequestDTO) {
-        return ApiResponse.success(productService.getAllProducts(productPageRequestDTO));
+    @PostMapping(value = "/",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "상품 생성", description = "새로운 상품을 생성합니다.")
+    public ApiResponse<Void> create(
+            @Parameter(
+                    description = "multipart/form-data 형식의 이미지 리스트를 input으로 받습니다. 이때 key 값은 multipartFile 입니다.")
+            @RequestPart ProductRequestDTO productRequestDTO,
+            @RequestPart(value = "productImages", required = false) MultipartFile[] productImages
+    ) throws IOException {
+        productService.createProduct(productRequestDTO, productImages);
+        return ApiResponse.success();
     }
 
     // 카테고리별 상품 조회
     @GetMapping("/byCategory")
     @Operation(summary = "카테고리별 상품 조회", description = "특정 카테고리에 속한 상품 조회")
-    public ApiResponse<Page<ProductPageResponseDTO>> readByCategory(
+    public ApiResponse<ProductPageResponseDTO> readByCategory(
             @RequestParam long categoryId,
             ProductPageRequestDTO productPageRequestDTO
     ) {
@@ -49,11 +52,13 @@ public class ProductController {
     @Operation(summary = "상품 수정", description = "상품 정보 수정")
     public ApiResponse<Void> update(
             @PathVariable long productId,
-            @RequestBody ProductRequestDTO productRequestDTO
-    ) {
-        productService.updateProduct(productId, productRequestDTO);
+            @RequestParam("productRequestDTO") ProductRequestDTO productRequestDTO,
+            @RequestParam(value = "productImages", required = false) MultipartFile[] productImages
+    ) throws IOException {
+        productService.updateProduct(productId, productRequestDTO, productImages);
         return ApiResponse.success();
     }
+
 
     // 상품 삭제
     @DeleteMapping("/{productId}")

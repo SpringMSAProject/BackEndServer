@@ -24,12 +24,18 @@ public class ProductImage extends BaseTimeEntity {
 
     private String name;
 
-    //확장자
     private String ext;
 
-    private String url;
+    // 이미지 URL 필드
+    private String imageUrl;
 
     private String status;
 
     private LocalDateTime deletedAt;
+
+    // 생성자 추가 - 이미지 URL을 받아서 저장
+    public ProductImage(Product product, String imageUrl) {
+        this.product = product;
+        this.imageUrl = imageUrl;
+    }
 }

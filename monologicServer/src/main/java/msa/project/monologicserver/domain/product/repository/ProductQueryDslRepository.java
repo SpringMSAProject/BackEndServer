@@ -8,14 +8,10 @@ import msa.project.monologicserver.api.dto.req.product.ProductPageRequestDTO;
 import msa.project.monologicserver.api.dto.res.product.ProductPageResponseDTO;
 import msa.project.monologicserver.api.model.product.ProductData;
 import msa.project.monologicserver.api.model.product.QProductData;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static msa.project.monologicserver.domain.product.entity.QProduct.product;
@@ -27,45 +23,12 @@ public class ProductQueryDslRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Page<ProductPageResponseDTO> getAllProducts(ProductPageRequestDTO pageRequestDTO) {
+    public ProductPageResponseDTO getProducts(Long categoryId, ProductPageRequestDTO pageRequestDTO) {
         List<ProductData> productDataList = queryFactory
                 .select(new QProductData(
                         product.productId,
                         product.member.id,
-                        product.category.id,
-                        product.title,
-                        product.description,
-                        product.price,
-                        product.viewCount,
-                        product.likeCount,
-                        product.location,
-                        product.condition,
-                        product.status,
-                        product.thumbImg,
-                        productImage
-                ))
-                .from(product)
-                .leftJoin(product.images, productImage)
-                .where(searchCondition(pageRequestDTO.getSearch()))
-                .offset((long) pageRequestDTO.getPageNumber() * pageRequestDTO.getPageSize())
-                .limit(pageRequestDTO.getPageSize())
-                .orderBy(getOrderSpecifier(pageRequestDTO.getSort(), pageRequestDTO.isAscending()))
-                .fetch();
-
-        long totalCount = queryFactory
-                .selectFrom(product)
-                .where(searchCondition(pageRequestDTO.getSearch()))
-                .fetchCount();
-
-        return new PageImpl<>(Collections.singletonList(new ProductPageResponseDTO(productDataList)), PageRequest.of(pageRequestDTO.getPageNumber(), pageRequestDTO.getPageSize()), totalCount);
-    }
-
-    public Page<ProductPageResponseDTO> getProductsByCategoryId(Long categoryId, ProductPageRequestDTO pageRequestDTO) {
-        List<ProductData> productDataList = queryFactory
-                .select(new QProductData(
-                        product.productId,
-                        product.member.id,
-                        product.category.id,
+                        product.categories.any().id,
                         product.title,
                         product.description,
                         product.price,
@@ -90,10 +53,12 @@ public class ProductQueryDslRepository {
                 .where(categoryIdEq(categoryId), searchCondition(pageRequestDTO.getSearch()))
                 .fetchCount();
 
-        return new PageImpl<>(Collections.singletonList(new ProductPageResponseDTO(productDataList)), PageRequest.of(pageRequestDTO.getPageNumber(), pageRequestDTO.getPageSize()), totalCount);
+        int totalPage = (int) Math.ceil((double) totalCount / pageRequestDTO.getPageSize());
+
+        return new ProductPageResponseDTO(totalPage, totalCount, pageRequestDTO.getPageNumber(), productDataList);
     }
 
-    public void deleteProductAndImages(Long productId) {
+    public void deleteProduct(Long productId) {
         // 상품 삭제
         queryFactory
                 .update(product)
@@ -101,18 +66,10 @@ public class ProductQueryDslRepository {
                 .set(product.deletedAt, LocalDateTime.now())
                 .where(product.productId.eq(productId))
                 .execute();
-
-        // 상품 이미지 삭제
-        queryFactory
-                .update(productImage)
-                .set(productImage.deletedAt, LocalDateTime.now())
-                .set(productImage.useYn, 9)
-                .where(productImage.product.productId.eq(productId))
-                .execute();
     }
 
     private BooleanExpression categoryIdEq(Long categoryId) {
-        return categoryId != null ? product.category.id.eq(categoryId) : null;
+        return categoryId != null ? product.categories.any().id.eq(categoryId) : null;
     }
 
     private BooleanExpression searchCondition(String search) {

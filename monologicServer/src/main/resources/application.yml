@@ -25,3 +25,6 @@ springdoc:
   swagger-ui:
     display-request-duration: true  # API 요청 지속 시간 표시 (m/s)
     defaultModelsExpandDepth: -1  # Schema 표시 여부 (기본값: 1 (표시))
+
+upload:
+  path: ./uploads

@@ -6,6 +6,7 @@ import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,13 +25,16 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductCategory> productCategories;
+
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Category> categories;
 
     private String title;
 
-//    @Lob
+    //    @Lob
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
@@ -77,6 +81,29 @@ public class Product extends BaseTimeEntity {
     public void decreaseLikeCount() {
         if (this.likeCount > 0) {
             this.likeCount--;
+        }
+    }
+
+    // Product와 ProductCategory를 연결하는 메서드 추가
+    public void addProductCategory(ProductCategory productCategory) {
+        if (productCategories == null) {
+            productCategories = new ArrayList<>();
+        }
+        productCategories.add(productCategory);
+        productCategory.setProduct(this);
+    }
+
+    public void addCategory(Category category) {
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
+        categories.add(category);
+    }
+
+    // 카테고리를 제거하는 메서드 추가
+    public void removeCategory(Category category) {
+        if (categories != null) {
+            categories.remove(category);
         }
     }
 }

@@ -16,12 +16,16 @@ public class ProductPageResponseDTO {
     @Schema(description = "전체 데이터 수")
     private long totalCount;
 
-    @Schema(description = "페이지 번호")
+    @Schema(description = "전체 페이지 수")
+    private int totalPage;
+
+    @Schema(description = "현재 페이지 번호")
     private int pageNumber;
 
-    public ProductPageResponseDTO(List<ProductData> productDataList) {
+    public ProductPageResponseDTO(int totalPage, long totalCount, int pageNumber, List<ProductData> productDataList) {
+        this.totalPage = totalPage;
+        this.totalCount = totalCount;
+        this.pageNumber = pageNumber;
         this.productData = productDataList;
-        this.totalCount = productDataList.size();
-        this.pageNumber = 1;
     }
 }
