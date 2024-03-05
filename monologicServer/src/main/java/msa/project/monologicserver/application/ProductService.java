@@ -2,6 +2,7 @@ package msa.project.monologicserver.application;
 
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
+import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
@@ -15,10 +16,12 @@ import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,8 +80,14 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDataResponseDto> readAll(Pageable pageable) {
-        return productRepository.findAll(pageable).map(ProductDataResponseDto::toProductDataResponseDto);
+    public List<ProductDataResponseDto> readAll(SearchConditionDto searchConditionDto) {
+//        return productRepository.findAll(pageable).map(ProductDataResponseDto::toProductDataResponseDto);
+//        searchConditionDto.getKeyword();
+        searchConditionDto.toString();
+
+        return productRepository.readAll(searchConditionDto).stream()
+                .map(ProductDataResponseDto::toProductDataResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -86,12 +95,15 @@ public class ProductService {
 
 //        for (Sort.Order order : pageable.getSort()) {
 //            if (order.getDirection() == Sort.Direction.DESC) {
-//                    return productRepository.findByCategoryIdOrderByCategoryIdDesc(pageable, getEntityById(category, categoryRepository))
-//                            .map(ProductDataResponseDto::toProductDataResponseDto);
+//                return productRepository.findByCategoryIdOrderByCategoryIdDesc(pageable, getEntityById(category, categoryRepository))
+//                        .map(ProductDataResponseDto::toProductDataResponseDto);
 //            }
 //        }
         Category entityById = getEntityById(category, categoryRepository);
-        System.out.println("==========================");
+
+
+
+
         return productRepository.findByCategoryId(entityById, pageable)
                 .map(ProductDataResponseDto::toProductDataResponseDto);
     }

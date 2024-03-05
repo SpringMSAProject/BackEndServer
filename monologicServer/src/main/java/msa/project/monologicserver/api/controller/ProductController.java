@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
+import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
@@ -50,18 +51,22 @@ public class ProductController {
     }
 
 
-    @GetMapping("/")
+    @PostMapping("/")
     @Operation(summary = "R", description = "모든 상품 조회")
-    public ResponseEntity<?> readAll(Pageable pageable) {
+    public ResponseEntity<?> readAll(@RequestBody SearchConditionDto searchConditionDto) {
+
+        searchConditionDto.toString();
+
         return ResponseEntity
-                .ok(ApiResponse.success(productService.readAll(pageable)));
+                .ok(ApiResponse.success(productService.readAll(searchConditionDto)));
     }
-    @GetMapping("/categories/{categoryId}")
-    @Operation(summary = "R", description = "카테고리별 모든 상품 조회")
-    public ResponseEntity<?> readByCategory(Pageable pageable, @PathVariable Long categoryId) {
-        return ResponseEntity
-                .ok(ApiResponse.success(productService.readByCategory(pageable, categoryId)));
-    }
+
+//    @GetMapping("/categories/{categoryId}")
+//    @Operation(summary = "R", description = "카테고리별 모든 상품 조회")
+//    public ResponseEntity<?> readByCategory(Pageable pageable, @PathVariable Long categoryId) {
+//        return ResponseEntity
+//                .ok(ApiResponse.success(productService.readByCategory(pageable, categoryId)));
+//    }
 
     @PostMapping("/{productId}/{memberId}")
     @Operation(summary = "RU", description = "상품 좋아요")

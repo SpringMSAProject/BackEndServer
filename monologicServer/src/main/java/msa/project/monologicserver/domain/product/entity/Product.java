@@ -74,6 +74,7 @@ public class Product extends BaseTimeEntity {
 
         public void likeCountMinusOne() {
         likeCount--;
+        //Todo
     }
 
     public void update(ProductRegisterDTO productRegisterDTO, Category category) {
