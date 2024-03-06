@@ -10,9 +10,11 @@ import msa.project.monologicserver.api.dto.req.product.ProductInsertRequestDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.api.dto.res.product.FilteredProductResponseDTO;
 import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
-import msa.project.monologicserver.domain.category.ProductCategory;
 import msa.project.monologicserver.domain.category.CategoryRepository;
 import msa.project.monologicserver.domain.category.CategoryType;
+import msa.project.monologicserver.domain.category.ProductCategory;
+import msa.project.monologicserver.domain.like.Likes;
+import msa.project.monologicserver.domain.like.ProductLikesRepository;
 import msa.project.monologicserver.domain.product.entity.Product;
 import msa.project.monologicserver.domain.product.entity.ProductImage;
 import msa.project.monologicserver.domain.product.entity.ProductImageRepository;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductLikesRepository productLikesRepository;
     private final ProductImageRepository productImageRepository;
     private final CategoryRepository categoryRepository;
 
@@ -63,7 +66,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Long updateProject(Long productId, ProductUpdateRequestDTO requestDTO) {
+    public Long updateProduct(Long productId, ProductUpdateRequestDTO requestDTO) {
         listValidation(requestDTO.images());
 
         final Product product = findProduct(productId);
@@ -116,7 +119,11 @@ public class ProductService {
         final List<ProductCategory> categories = categoriesRequestDTO.stream()
             .map(i -> ProductCategory.builder().category(i).product(product).build())
             .toList();
-        product.setCategories(categories);
+
+        for (ProductCategory category : categories) {
+            product.getCategories().add(category);
+        }
+
         categoryRepository.saveAll(categories);
     }
 
@@ -142,7 +149,7 @@ public class ProductService {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
         }
         // 썸네일 지정 (S3환경에서는 name이 아닌 S3 url)
-        product.setThumbImg(thumbnailImage.getOriginalFilename());
+//        product.setThumbImg(thumbnailImage.getOriginalFilename());
 
         //이미지 저장
         images.forEach(multipartFile ->
@@ -158,4 +165,12 @@ public class ProductService {
             )
         );
     }
+
+    @Transactional
+    public Long likeProduct(Long productId) {
+        final Likes save = productLikesRepository.save(
+            Likes.builder().product(findProduct(productId)).member(null).build());
+        return save.getId();
+    }
+
 }

@@ -63,7 +63,7 @@ public class ProductController {
         @Valid @PathVariable Long productId
     ) {
         System.out.println(requestDTO.images().get(0).getName());
-        return ApiResponse.success(productService.updateProject(productId, requestDTO));
+        return ApiResponse.success(productService.updateProduct(productId, requestDTO));
     }
 
     @DeleteMapping("/{productId}")
@@ -72,6 +72,14 @@ public class ProductController {
         @Valid @PathVariable Long productId
     ) {
         return ApiResponse.success(productService.deleteProduct(productId));
+    }
+
+    @PostMapping("/{productId}")
+    @Operation(summary = "D", description = "상품 좋아요")
+    public ApiResponse<Long> likeProduct(
+        @Valid @PathVariable Long productId
+    ) {
+        return ApiResponse.success(productService.likeProduct(productId));
     }
 
 }
