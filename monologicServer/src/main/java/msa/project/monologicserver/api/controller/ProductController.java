@@ -11,6 +11,7 @@ import msa.project.monologicserver.api.dto.res.product.ProductResponseDTO;
 import msa.project.monologicserver.api.dto.req.product.ProductUpdateRequestDTO;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,11 +47,11 @@ public class ProductController {
         return ApiResponse.success(productService.getProduct(productId));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @Operation(summary = "R", description = "상품 전체 조회")
     public ApiResponse<List<FilteredProductResponseDTO>> getAllProduct(
         @PageableDefault(size=10) Pageable pageable,
-        @RequestBody ProductFilteredRequestDTO requestDto
+        @ModelAttribute ProductFilteredRequestDTO requestDto
     ) {
         return ApiResponse.success(productService.getAllProduct(pageable, requestDto));
     }

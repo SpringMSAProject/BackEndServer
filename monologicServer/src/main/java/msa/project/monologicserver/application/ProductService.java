@@ -21,6 +21,7 @@ import msa.project.monologicserver.domain.product.entity.ProductImageRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
