@@ -1,14 +1,13 @@
 package msa.project.monologicserver.domain.product.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,15 +25,19 @@ public class Product extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @Setter
     // 여기는 왜 이렇게 해놨는지 물어보자.
     private Category categoryId;
 
+    @Setter
     private String title;
 
     @Lob
+    @Setter
     @Column(name = "description")
     private String description;
 
+    @Setter
     private int price;
 
     private int viewCount = 0;
@@ -44,13 +47,16 @@ public class Product extends BaseTimeEntity {
     private String location;
 
     // 물품 상태
+    @Setter
     private String condition;
 
     // 거래 상태
+    @Setter
     private String status = "pre";
 
     @Lob
-    private String thumbImg;
+    @Setter
+//    private List<MultipartFile> imgFiles;
 
     private LocalDateTime deletedAt;
 
@@ -62,6 +68,7 @@ public class Product extends BaseTimeEntity {
         this.location = location;
         this.condition = condition;
     }
+
 }
 
 

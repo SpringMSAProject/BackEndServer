@@ -43,7 +43,12 @@ public enum CommonErrorCode implements ErrorCode {
 
     ALREADY_DELETED("COMMON_001",LogType.ERROR,500, "이미 삭제된 회원 입니다."),
     CANNOT_UPDATE_DELETED_POST("COMMON_001",LogType.ERROR,500, "삭제된 회원은 수정할 수 없습니다."),
-    BAD_REQUEST("COMMON_001",LogType.ERROR,400 , "요청이 유효하지 않습니다.");
+    BAD_REQUEST("COMMON_001",LogType.ERROR,400 , "요청이 유효하지 않습니다."),
+
+
+    // 판매글 관리
+    PRODUCT_NOT_FOUND("PRODUCT_001",LogType.ERROR,500, "게시글을 찾을 수 없습니다.");
+
 
     private final String code;
     private final String message;

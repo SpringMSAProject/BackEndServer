@@ -16,15 +16,22 @@ public class ProductContoller {
 
     private final ProductService productService;
     @PostMapping("/")
-    public ApiResponse<String> resist(@RequestBody ProductDTO pdto) {
+    public ApiResponse<String> resist(@ModelAttribute ProductDTO pdto) {
         return ApiResponse.success(productService.resist(pdto));
     }
 
     @GetMapping("/")
-    public List<Product> productList() {
-        return productService.getList();
+    public List<Product> productAllList() {
+        return productService.getAllList();
     }
 
+    @PutMapping("/{productID}")
+    public ApiResponse<String> update(@PathVariable(name = "productID") Long pid, @RequestBody ProductDTO pdto) {
+        return ApiResponse.success(productService.update(pid, pdto));
+    }
 
-
+    @DeleteMapping("/{productID}")
+    public ApiResponse<String> delete(@PathVariable(name = "productID") Long pid) {
+        return ApiResponse.success(productService.delete(pid));
+    }
 }
