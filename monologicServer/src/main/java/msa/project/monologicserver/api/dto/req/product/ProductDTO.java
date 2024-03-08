@@ -2,9 +2,6 @@ package msa.project.monologicserver.api.dto.req.product;
 
 import jakarta.validation.constraints.NotBlank;
 import msa.project.monologicserver.domain.product.entity.Product;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public record ProductDTO(
     @NotBlank String title,
