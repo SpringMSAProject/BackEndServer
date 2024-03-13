@@ -20,7 +20,7 @@ public class ProductCustomRepositoryImpl extends QuerydslRepositorySupport imple
 
     private final JPAQueryFactory queryFactory;
     private final QProduct product = QProduct.product;
-    private final QCategory category = QCategory.category1;
+    private final QCategory category = QCategory.category;
 
     public ProductCustomRepositoryImpl(JPAQueryFactory queryFactory) {
         super(Product.class);
@@ -28,14 +28,14 @@ public class ProductCustomRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     public Page<Product> findByCategoryAndPaging(String categoryName, Pageable pageable) {
-        List<Product> result = queryFactory
-                .selectFrom(product)
-                .join(product)
-                .on(product.categoryId.eq(category))
-                .orderBy(category.id.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+//        List<Product> result = queryFactory
+//                .selectFrom(product)
+//                .join(product)
+//                .on(product.categoryId.eq(category))
+//                .orderBy(category.id.asc())
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
         return null;
     }
 
@@ -43,32 +43,32 @@ public class ProductCustomRepositoryImpl extends QuerydslRepositorySupport imple
     public List<Product> readAll(SearchConditionDto searchConditionDto) {
 
 
-        JPAQuery<Product> query = queryFactory.selectFrom(product)
-                .join(product)
-                .on(product.categoryId.eq(category))
-                .where(product.title.eq(searchConditionDto.keyword()));
+//        JPAQuery<Product> query = queryFactory.selectFrom(product)
+//                .join(product)
+//                .on(product.categoryId.eq(category))
+//                .where(product.title.eq(searchConditionDto.keyword()));
+//
+//        if (searchConditionDto.isOrderCategoryDesc()) {
+//            query.orderBy(category.category.desc());
+//        } else {
+//            query.orderBy(category.category.asc());
+//        }
+//
+//        if (searchConditionDto.isOrderLikeDesc()) {
+//            query.orderBy(product.likeCount.desc());
+//        } else {
+//            query.orderBy(product.likeCount.asc());
+//        }
+//
+//        if (searchConditionDto.isOrderUpdateDesc()) {
+//            query.orderBy(product.updatedAt.desc());
+//        } else {
+//            query.orderBy(product.updatedAt.asc());
+//        }
 
-        if (searchConditionDto.isOrderCategoryDesc()) {
-            query.orderBy(category.category.desc());
-        } else {
-            query.orderBy(category.category.asc());
-        }
+//        List<Product> result = query.fetch();
 
-        if (searchConditionDto.isOrderLikeDesc()) {
-            query.orderBy(product.likeCount.desc());
-        } else {
-            query.orderBy(product.likeCount.asc());
-        }
-
-        if (searchConditionDto.isOrderUpdateDesc()) {
-            query.orderBy(product.updatedAt.desc());
-        } else {
-            query.orderBy(product.updatedAt.asc());
-        }
-
-        List<Product> result = query.fetch();
-
-        return result;
+        return null;
     }
 
 //    public Page<Product> findByCategoryAndPaging(String categoryName, Pageable pageable) {

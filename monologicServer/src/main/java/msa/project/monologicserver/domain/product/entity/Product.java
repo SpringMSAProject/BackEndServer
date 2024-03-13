@@ -25,9 +25,9 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category categoryId;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "category_id")
+//    private Category categoryId;
 
     private String title;
 
@@ -55,7 +55,7 @@ public class Product extends BaseTimeEntity {
     @Builder
     public Product(Member memberId, Category categoryId, String title, String description, int price, String location, String condition, String status, String thumbImg) {
         this.memberId = memberId;
-        this.categoryId = categoryId;
+//        this.categoryId = categoryId;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -78,13 +78,13 @@ public class Product extends BaseTimeEntity {
     }
 
     public void update(ProductRegisterDTO productRegisterDTO, Category category) {
-        this.categoryId = category;
+//        this.categoryId = category;
         this.title = productRegisterDTO.title();
         this.description = productRegisterDTO.description();
         this.price = productRegisterDTO.price();
         this.location = productRegisterDTO.location();
         this.condition = productRegisterDTO.condition();
         this.status = productRegisterDTO.status();
-        this.thumbImg = productRegisterDTO.thumbImg();
+//        this.thumbImg = productRegisterDTO.thumbImg();
     }
 }

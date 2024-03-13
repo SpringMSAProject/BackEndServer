@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>,ProductCustomRepository {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
 //    List<Product> findAll();
 
     //    Page<Product> findByCategoryId(Pageable pageable);
-    Page<Product> findByCategoryId(Category category, Pageable pageable);
+//    Page<Product> findByCategoryId(Category category, Pageable pageable);
 
-    Page<Product> findByCategoryIdOrderByCategoryIdDesc(Pageable pageable, Category category);
+//    Page<Product> findByCategoryIdOrderByCategoryIdDesc(Pageable pageable, Category category);
 
 
 }

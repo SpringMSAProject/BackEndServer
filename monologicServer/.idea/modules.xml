@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/monologicServer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/monologicServer.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/msa.project.monologicServer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/msa.project.monologicServer.main.iml" />
     </modules>
   </component>
 </project>

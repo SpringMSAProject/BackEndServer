@@ -12,6 +12,7 @@ import msa.project.monologicserver.global.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,13 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/{memberId}")
+    @PostMapping(value = "/{memberId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "C", description = "상품 등록")
     public ResponseEntity<?> registerProduct(
             @PathVariable String memberId,
-            @Valid @RequestBody ProductRegisterDTO productRegisterDTO
+            @Valid @ModelAttribute ProductRegisterDTO productRegisterDTO
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(productService.registerProduct(memberId, productRegisterDTO)));

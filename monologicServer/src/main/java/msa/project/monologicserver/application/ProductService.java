@@ -9,8 +9,10 @@ import msa.project.monologicserver.domain.member.MemberRepository;
 import msa.project.monologicserver.domain.product.entity.Category;
 import msa.project.monologicserver.domain.product.entity.Like;
 import msa.project.monologicserver.domain.product.entity.Product;
+import msa.project.monologicserver.domain.product.entity.ProductImage;
 import msa.project.monologicserver.domain.product.repository.CategoryRepository;
 import msa.project.monologicserver.domain.product.repository.LikeRepository;
+import msa.project.monologicserver.domain.product.repository.ProductImageRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
@@ -29,23 +31,54 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final LikeRepository likeRepository;
 
     public Long registerProduct(String memberId, ProductRegisterDTO productRegisterDTO) {
+
+        if (productRegisterDTO.categories().size() == 0) {
+            throw new BusinessException(CommonErrorCode.BAD_REQUEST);
+        }
+
         Member member = getMemberEntity(memberId);
-        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
-        Product product = productRepository.save(productRegisterDTO.toEntity(member, category));
+        Product product = productRegisterDTO.of(member);
+
+        productRepository.save(product);
+
+        productRegisterDTO.categories().forEach(categoryType ->
+            categoryRepository.save(
+                    Category.builder()
+                            .categoryName(categoryType.name())
+                            .product(product)
+                            .build())
+        );
+
+        if (productRegisterDTO.images().size() > 0) {
+            productRegisterDTO.images().forEach(multipartFile ->
+                    productImageRepository.save(
+                            ProductImage.builder()
+                                    .productId(product)
+                                    .ext(multipartFile.getContentType())
+                                    .name(multipartFile.getOriginalFilename())
+                                    .url("url")
+                                    .status("status")
+                                    .build())
+            );
+        }
+
+//        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
+//        Product product = productRepository.save(productRegisterDTO.toEntity(member, category));
 
         return product.getProductId();
     }
 
     public ProductDataResponseDto updateProduct(Long productId, ProductRegisterDTO productRegisterDTO) {
         Product product = getEntityById(productId, productRepository);
-        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
+//        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
 
-        product.update(productRegisterDTO,category);
+//        product.update(productRegisterDTO,category);
 
         return ProductDataResponseDto.toProductDataResponseDto(product);
     }
@@ -85,9 +118,10 @@ public class ProductService {
 //        searchConditionDto.getKeyword();
         searchConditionDto.toString();
 
-        return productRepository.readAll(searchConditionDto).stream()
-                .map(ProductDataResponseDto::toProductDataResponseDto)
-                .collect(Collectors.toList());
+//        return productRepository.readAll(searchConditionDto).stream()
+//                .map(ProductDataResponseDto::toProductDataResponseDto)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     @Transactional(readOnly = true)
@@ -104,8 +138,9 @@ public class ProductService {
 
 
 
-        return productRepository.findByCategoryId(entityById, pageable)
-                .map(ProductDataResponseDto::toProductDataResponseDto);
+//        return productRepository.findByCategoryId(entityById, pageable)
+//                .map(ProductDataResponseDto::toProductDataResponseDto);
+        return null;
     }
 
     public Member getMemberEntity(String memberId) {
