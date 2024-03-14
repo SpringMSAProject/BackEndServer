@@ -1,6 +1,7 @@
 package msa.project.monologicserver.application;
 
 import lombok.RequiredArgsConstructor;
+import msa.project.monologicserver.api.dto.req.product.CategoryType;
 import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
@@ -15,6 +16,7 @@ import msa.project.monologicserver.domain.product.repository.LikeRepository;
 import msa.project.monologicserver.domain.product.repository.ProductImageRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
+import msa.project.monologicserver.global.error.code.ErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +24,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,11 +40,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final LikeRepository likeRepository;
 
-    public Long registerProduct(String memberId, ProductRegisterDTO productRegisterDTO) {
-
-        if (productRegisterDTO.categories().size() == 0) {
-            throw new BusinessException(CommonErrorCode.BAD_REQUEST);
-        }
+    public ProductDataResponseDto registerProduct(String memberId, ProductRegisterDTO productRegisterDTO) {
 
         Member member = getMemberEntity(memberId);
         Product product = productRegisterDTO.of(member);
@@ -59,7 +59,7 @@ public class ProductService {
             productRegisterDTO.images().forEach(multipartFile ->
                     productImageRepository.save(
                             ProductImage.builder()
-                                    .productId(product)
+                                    .product(product)
                                     .ext(multipartFile.getContentType())
                                     .name(multipartFile.getOriginalFilename())
                                     .url("url")
@@ -68,10 +68,16 @@ public class ProductService {
             );
         }
 
-//        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
-//        Product product = productRepository.save(productRegisterDTO.toEntity(member, category));
 
-        return product.getProductId();
+        List<Category> categoryList = categoryRepository.findByProduct(product)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+
+        return ProductDataResponseDto
+                .toProductDataResponseDto(
+                        product,
+                        categoryList,
+                        productImages);
     }
 
     public ProductDataResponseDto updateProduct(Long productId, ProductRegisterDTO productRegisterDTO) {
@@ -80,14 +86,30 @@ public class ProductService {
 
 //        product.update(productRegisterDTO,category);
 
-        return ProductDataResponseDto.toProductDataResponseDto(product);
+        List<Category> categoryList = categoryRepository.findByProduct(product)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+
+        return ProductDataResponseDto
+                .toProductDataResponseDto(
+                        product,
+                        categoryList,
+                        productImages);
     }
 
     public ProductDataResponseDto readProduct(Long productId) {
         Product product = getEntityById(productId, productRepository);
         product.viewCountPlusOne();
 
-        return ProductDataResponseDto.toProductDataResponseDto(product);
+        List<Category> categoryList = categoryRepository.findByProduct(product)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+
+        return ProductDataResponseDto
+                .toProductDataResponseDto(
+                        product,
+                        categoryList,
+                        productImages);
     }
 
     public ProductDataResponseDto likeProduct(Long productId, String memberId) {
@@ -109,7 +131,15 @@ public class ProductService {
                             product.likeCountPlusOne();
                         });
 
-        return ProductDataResponseDto.toProductDataResponseDto(product);
+        List<Category> categoryList = categoryRepository.findByProduct(product)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+
+        return ProductDataResponseDto
+                .toProductDataResponseDto(
+                        product,
+                        categoryList,
+                        productImages);
     }
 
     @Transactional(readOnly = true)

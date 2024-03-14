@@ -1,10 +1,14 @@
 package msa.project.monologicserver.api.dto.res.product;
 
+import msa.project.monologicserver.api.dto.req.product.CategoryType;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.product.entity.Category;
 import msa.project.monologicserver.domain.product.entity.Product;
+import msa.project.monologicserver.domain.product.entity.ProductImage;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public record ProductDataResponseDto(
         Long productId,
@@ -14,31 +18,38 @@ public record ProductDataResponseDto(
 //        String category,
         String title,
         String description,
-        Integer price,
+        int price,
         String location,
         String condition,
         String status,
-        String thumbImg,
-
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        List<CategoryType> categoryTypes,
+        List<String> url
 ) {
-    public static ProductDataResponseDto toProductDataResponseDto(Product product) {
+    public static ProductDataResponseDto toProductDataResponseDto(Product product, List<Category> categories, List<ProductImage> productImage) {
+
+        List<CategoryType> categoriesNameList = new ArrayList<>();
+        categories.forEach(c -> categoriesNameList.add(CategoryType.valueOf(c.getCategoryName())));
+
+        List<String> urlList = new ArrayList<>();
+        productImage.forEach(img -> urlList.add(img.getUrl()));
+
         return new ProductDataResponseDto(
                 product.getProductId(),
                 product.getMemberId().getId(),
                 product.getMemberId().getMemberProfile().getNickname(),
-//                product.getCategoryId().getId(),
-//                product.getCategoryId().getCategory(),
                 product.getTitle(),
                 product.getDescription(),
                 product.getPrice(),
                 product.getLocation(),
                 product.getCondition(),
                 product.getStatus(),
-                product.getThumbImg(),
                 product.getCreatedAt(),
-                product.getUpdatedAt()
+                product.getUpdatedAt(),
+                categoriesNameList,
+                urlList
         );
     }
+
 }
