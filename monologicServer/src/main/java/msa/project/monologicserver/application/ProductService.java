@@ -4,18 +4,15 @@ import lombok.RequiredArgsConstructor;
 import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
+import msa.project.monologicserver.api.dto.res.product.SearchData;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
 import msa.project.monologicserver.domain.product.entity.*;
-import msa.project.monologicserver.domain.product.repository.CategoryRepository;
-import msa.project.monologicserver.domain.product.repository.LikeRepository;
-import msa.project.monologicserver.domain.product.repository.ProductImageRepository;
-import msa.project.monologicserver.domain.product.repository.ProductRepository;
+import msa.project.monologicserver.domain.product.repository.*;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +76,12 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public Page<SearchData> readAll(SearchConditionDto searchConditionDto, Pageable pageable) {
+
+        return productRepository.readAll(searchConditionDto, pageable);
+    }
+
+    @Transactional
     public ProductDataResponseDto readProduct(Long productId) {
         Product product = findProductById(productId);
         product.viewCountPlusOne();
@@ -120,18 +123,6 @@ public class ProductService {
                         product,
                         categoryList,
                         productImages);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ProductDataResponseDto> readAll(SearchConditionDto searchConditionDto) {
-//        return productRepository.findAll(pageable).map(ProductDataResponseDto::toProductDataResponseDto);
-//        searchConditionDto.getKeyword();
-        searchConditionDto.toString();
-
-//        return productRepository.readAll(searchConditionDto).stream()
-//                .map(ProductDataResponseDto::toProductDataResponseDto)
-//                .collect(Collectors.toList());
-        return null;
     }
 
     @Transactional(readOnly = true)

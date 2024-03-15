@@ -1,19 +1,25 @@
 package msa.project.monologicserver.api.dto.req.product;
 
-public record SearchConditionDto (
-    String keyword,
-    boolean isOrderCategoryDesc,
-    boolean isOrderLikeDesc,
-    boolean isOrderUpdateDesc
-) {
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+public record SearchConditionDto (
+        @NotNull @Size(min = 0) int page,
+        String keyword,
+        boolean isCategoryDesc,
+        boolean isViewCountDesc,
+        boolean isLikeDesc,
+        boolean isUpdateDesc
+) {
     @Override
     public String toString() {
         return "SearchConditionDto{" +
+                "page=" + page +
                 ", keyword='" + keyword + '\'' +
-                ", isOrderCategoryDesc=" + isOrderCategoryDesc +
-                ", isOrderLikeDesc=" + isOrderLikeDesc +
-                ", isOrderUpdateDesc=" + isOrderUpdateDesc +
+                ", isCategoryDesc=" + isCategoryDesc +
+                ", isViewCountDesc=" + isViewCountDesc +
+                ", isLikeDesc=" + isLikeDesc +
+                ", isUpdateDesc=" + isUpdateDesc +
                 '}';
     }
 }

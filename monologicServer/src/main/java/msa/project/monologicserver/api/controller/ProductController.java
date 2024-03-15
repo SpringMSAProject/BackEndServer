@@ -9,6 +9,7 @@ import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    @Operation(summary = "RU", description = "상품 조회")
+    @Operation(summary = "RU", description = "상품 조회 및 조회수 증가")
     public ResponseEntity<?> read(@PathVariable Long productId) {
         return ResponseEntity
                 .ok(ApiResponse.success(productService.readProduct(productId)));
@@ -54,12 +55,9 @@ public class ProductController {
 
     @PostMapping("/")
     @Operation(summary = "R", description = "모든 상품 조회")
-    public ResponseEntity<?> readAll(@RequestBody SearchConditionDto searchConditionDto) {
-
-        searchConditionDto.toString();
-
+    public ResponseEntity<?> readAll(@RequestBody SearchConditionDto searchConditionDto, Pageable pageable) {
         return ResponseEntity
-                .ok(ApiResponse.success(productService.readAll(searchConditionDto)));
+                .ok(ApiResponse.success(productService.readAll(searchConditionDto, pageable)));
     }
 
 //    @GetMapping("/categories/{categoryId}")
