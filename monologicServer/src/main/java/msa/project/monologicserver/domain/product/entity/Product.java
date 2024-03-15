@@ -5,9 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
+import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -25,10 +26,6 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "category_id")
-//    private Category categoryId;
-
     private String title;
 
     @Lob
@@ -43,19 +40,25 @@ public class Product extends BaseTimeEntity {
 
     private String location;
 
-    private String condition;
+    @Enumerated(EnumType.STRING)
+    private ConditionType condition;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusType status = StatusType.PRE;
 
     @Lob
     private String thumbImg;
 
     private LocalDateTime deletedAt;
 
+    @PrePersist
+    public void defaultStatus() {
+        this.status = this.status == null ? StatusType.PRE : this.status;
+    }
+
     @Builder
-    public Product(Member memberId, Category categoryId, String title, String description, int price, String location, String condition, String status, String thumbImg) {
+    public Product(Member memberId, String title, String description, int price, String location, ConditionType condition, StatusType status, String thumbImg) {
         this.memberId = memberId;
-//        this.categoryId = categoryId;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -74,17 +77,20 @@ public class Product extends BaseTimeEntity {
 
         public void likeCountMinusOne() {
         likeCount--;
-        //Todo
+        //Todo 좋아요 테이블 INSERT
     }
 
-    public void update(ProductRegisterDTO productRegisterDTO, Category category) {
-//        this.categoryId = category;
+    public void update(ProductPostDTO productRegisterDTO) {
         this.title = productRegisterDTO.title();
         this.description = productRegisterDTO.description();
         this.price = productRegisterDTO.price();
         this.location = productRegisterDTO.location();
         this.condition = productRegisterDTO.condition();
         this.status = productRegisterDTO.status();
-//        this.thumbImg = productRegisterDTO.thumbImg();
+
+        if (productRegisterDTO.images().size() > 0) {
+            MultipartFile firstFile = productRegisterDTO.images().get(0);
+            this.thumbImg = firstFile.getOriginalFilename();
+        }
     }
 }

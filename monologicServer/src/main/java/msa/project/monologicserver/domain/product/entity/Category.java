@@ -15,14 +15,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String categoryName;
+    @Enumerated(EnumType.STRING)
+    private CategoryType categoryName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @Builder
-    public Category(String categoryName, Product product) {
+    public Category(CategoryType categoryName, Product product) {
         this.categoryName = categoryName;
         this.product = product;
     }

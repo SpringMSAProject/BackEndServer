@@ -1,10 +1,6 @@
 package msa.project.monologicserver.api.dto.res.product;
 
-import msa.project.monologicserver.api.dto.req.product.CategoryType;
-import msa.project.monologicserver.domain.member.Member;
-import msa.project.monologicserver.domain.product.entity.Category;
-import msa.project.monologicserver.domain.product.entity.Product;
-import msa.project.monologicserver.domain.product.entity.ProductImage;
+import msa.project.monologicserver.domain.product.entity.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,14 +10,12 @@ public record ProductDataResponseDto(
         Long productId,
         String memberId,
         String nickname,
-//        Long categoryId,
-//        String category,
         String title,
         String description,
         int price,
         String location,
-        String condition,
-        String status,
+        ConditionType condition,
+        StatusType status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         List<CategoryType> categoryTypes,
@@ -30,7 +24,7 @@ public record ProductDataResponseDto(
     public static ProductDataResponseDto toProductDataResponseDto(Product product, List<Category> categories, List<ProductImage> productImage) {
 
         List<CategoryType> categoriesNameList = new ArrayList<>();
-        categories.forEach(c -> categoriesNameList.add(CategoryType.valueOf(c.getCategoryName())));
+        categories.forEach(c -> categoriesNameList.add(CategoryType.valueOf(String.valueOf(c.getCategoryName()))));
 
         List<String> urlList = new ArrayList<>();
         productImage.forEach(img -> urlList.add(img.getUrl()));

@@ -1,35 +1,40 @@
 package msa.project.monologicserver.api.dto.req.product;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import msa.project.monologicserver.domain.member.Member;
+import msa.project.monologicserver.domain.product.entity.ConditionType;
+import msa.project.monologicserver.domain.product.entity.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Product;
+import msa.project.monologicserver.domain.product.entity.StatusType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public record ProductRegisterDTO (
+public record ProductPostDTO(
     @NotBlank String title,
     @NotBlank String description,
     @NotNull int price,
     @NotBlank String location,
-    @NotBlank String condition,
-    @NotBlank String status,
+    @NotNull ConditionType condition,
+    StatusType status,
+
+    List<MultipartFile> images,
 
     @Valid
     @NotNull
     @Size(min = 1)
-    List<CategoryType> categories,
+    List<CategoryType> categories
 
-    List<MultipartFile> images
 
 ) {
     public Product of(Member member) {
 
         String thumbImg = null;
-        if (this.images() != null) {
+        if (this.images() != null && this.images().isEmpty()) {
             MultipartFile firstFile = this.images().get(0);
             thumbImg = firstFile.getOriginalFilename();
         }

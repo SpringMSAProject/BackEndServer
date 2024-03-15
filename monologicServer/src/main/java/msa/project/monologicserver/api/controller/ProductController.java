@@ -4,13 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
+import lombok.extern.slf4j.Slf4j;
+import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
-import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,22 +26,22 @@ public class ProductController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "C", description = "상품 등록")
-    public ResponseEntity<?> registerProduct(
+    public ResponseEntity<?> createProduct(
             @PathVariable String memberId,
-            @Valid @ModelAttribute ProductRegisterDTO productRegisterDTO
+            @Valid @ModelAttribute ProductPostDTO productPostDTO
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(productService.registerProduct(memberId, productRegisterDTO)));
+                .body(ApiResponse.success(productService.createProduct(memberId, productPostDTO)));
     }
 
     @PutMapping("/{productId}")
     @Operation(summary = "RU", description = "상품 수정")
     public ResponseEntity<?> updateProduct(
             @PathVariable Long productId,
-            @Valid @RequestBody ProductRegisterDTO productRegisterDTO
+            @Valid @ModelAttribute ProductPostDTO productPostDTO
     ) {
-        return ResponseEntity
-                .ok(ApiResponse.success(productService.updateProduct(productId, productRegisterDTO)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(productService.updateProduct(productId, productPostDTO)));
     }
 
     @GetMapping("/{productId}")

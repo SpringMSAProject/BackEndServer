@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
 
     Optional<List<ProductImage>> findByProduct(Product product);
+
+    void deleteByProduct(Product product);
 }

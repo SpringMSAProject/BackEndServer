@@ -1,22 +1,17 @@
 package msa.project.monologicserver.application;
 
 import lombok.RequiredArgsConstructor;
-import msa.project.monologicserver.api.dto.req.product.CategoryType;
-import msa.project.monologicserver.api.dto.req.product.ProductRegisterDTO;
+import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
-import msa.project.monologicserver.domain.product.entity.Category;
-import msa.project.monologicserver.domain.product.entity.Like;
-import msa.project.monologicserver.domain.product.entity.Product;
-import msa.project.monologicserver.domain.product.entity.ProductImage;
+import msa.project.monologicserver.domain.product.entity.*;
 import msa.project.monologicserver.domain.product.repository.CategoryRepository;
 import msa.project.monologicserver.domain.product.repository.LikeRepository;
 import msa.project.monologicserver.domain.product.repository.ProductImageRepository;
 import msa.project.monologicserver.domain.product.repository.ProductRepository;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
-import msa.project.monologicserver.global.error.code.ErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,70 +33,58 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final LikeRepository likeRepository;
 
-    public ProductDataResponseDto registerProduct(String memberId, ProductRegisterDTO productRegisterDTO) {
+    @Transactional
+    public ProductDataResponseDto createProduct(String memberId, ProductPostDTO productPostDTO) {
 
-        Member member = getMemberEntity(memberId);
-        Product product = productRegisterDTO.of(member);
+        if (productPostDTO.status() != null && productPostDTO.status() != StatusType.PRE) {
+            throw new BusinessException(CommonErrorCode.BAD_REQUEST);
+        }
+
+        Member member = findMemberById(memberId);
+        Product product = productPostDTO.of(member);
 
         productRepository.save(product);
 
-        productRegisterDTO.categories().forEach(categoryType ->
-            categoryRepository.save(
-                    Category.builder()
-                            .categoryName(categoryType.name())
-                            .product(product)
-                            .build())
-        );
+        List<Category> categoryList = saveCategories(productPostDTO, product);
+        List<ProductImage> productImageList = saveProductImages(productPostDTO, product);
 
-        if (productRegisterDTO.images().size() > 0) {
-            productRegisterDTO.images().forEach(multipartFile ->
-                    productImageRepository.save(
-                            ProductImage.builder()
-                                    .product(product)
-                                    .ext(multipartFile.getContentType())
-                                    .name(multipartFile.getOriginalFilename())
-                                    .url("url")
-                                    .status("status")
-                                    .build())
-            );
+        return ProductDataResponseDto
+                .toProductDataResponseDto(
+                        product,
+                        categoryList,
+                        productImageList);
+    }
+
+    @Transactional
+    public ProductDataResponseDto updateProduct(Long productId, ProductPostDTO productPostDTO) {
+
+        if (productPostDTO.status() == null) {
+            throw new BusinessException(CommonErrorCode.BAD_REQUEST);
         }
 
+        Product product = findProductById(productId);
+        product.update(productPostDTO);
 
-        List<Category> categoryList = categoryRepository.findByProduct(product)
-                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
-        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+        categoryRepository.deleteByProduct(product);
+        List<Category> categoryList = saveCategories(productPostDTO, product);
 
-        return ProductDataResponseDto
-                .toProductDataResponseDto(
-                        product,
-                        categoryList,
-                        productImages);
-    }
-
-    public ProductDataResponseDto updateProduct(Long productId, ProductRegisterDTO productRegisterDTO) {
-        Product product = getEntityById(productId, productRepository);
-//        Category category = getEntityById(productRegisterDTO.category(), categoryRepository);
-
-//        product.update(productRegisterDTO,category);
-
-        List<Category> categoryList = categoryRepository.findByProduct(product)
-                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
-        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+        productImageRepository.deleteByProduct(product);
+        List<ProductImage> productImageList = saveProductImages(productPostDTO, product);
 
         return ProductDataResponseDto
                 .toProductDataResponseDto(
                         product,
                         categoryList,
-                        productImages);
+                        productImageList);
     }
 
+    @Transactional(readOnly = true)
     public ProductDataResponseDto readProduct(Long productId) {
-        Product product = getEntityById(productId, productRepository);
+        Product product = findProductById(productId);
         product.viewCountPlusOne();
 
-        List<Category> categoryList = categoryRepository.findByProduct(product)
-                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
-        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+        List<Category> categoryList = findCategoryList(product);
+        List<ProductImage> productImages = findProductImageList(product);
 
         return ProductDataResponseDto
                 .toProductDataResponseDto(
@@ -113,8 +94,8 @@ public class ProductService {
     }
 
     public ProductDataResponseDto likeProduct(Long productId, String memberId) {
-        Product product = getEntityById(productId, productRepository);
-        Member member = getMemberEntity(memberId);
+        Member member = findMemberById(memberId);
+        Product product = findProductById(productId);
 
         likeRepository.findByProductIdAndMemberId(product, member)
                 .ifPresentOrElse(
@@ -124,16 +105,15 @@ public class ProductService {
                         },
                         () -> {
                             Like like = Like.builder()
-                                            .memberId(member)
-                                            .productId(product)
-                                            .build();
+                                    .memberId(member)
+                                    .productId(product)
+                                    .build();
                             likeRepository.save(like);
                             product.likeCountPlusOne();
                         });
 
-        List<Category> categoryList = categoryRepository.findByProduct(product)
-                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
-        List<ProductImage> productImages = productImageRepository.findByProduct(product).isPresent() ? productImageRepository.findByProduct(product).get() : new ArrayList<>();
+        List<Category> categoryList = findCategoryList(product);
+        List<ProductImage> productImages = findProductImageList(product);
 
         return ProductDataResponseDto
                 .toProductDataResponseDto(
@@ -157,29 +137,60 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductDataResponseDto> readByCategory(Pageable pageable, Long category) {
 
-//        for (Sort.Order order : pageable.getSort()) {
-//            if (order.getDirection() == Sort.Direction.DESC) {
-//                return productRepository.findByCategoryIdOrderByCategoryIdDesc(pageable, getEntityById(category, categoryRepository))
-//                        .map(ProductDataResponseDto::toProductDataResponseDto);
-//            }
-//        }
-        Category entityById = getEntityById(category, categoryRepository);
-
-
-
-
-//        return productRepository.findByCategoryId(entityById, pageable)
-//                .map(ProductDataResponseDto::toProductDataResponseDto);
         return null;
     }
 
-    public Member getMemberEntity(String memberId) {
+    private Member findMemberById(String memberId) {
         return memberRepository.findMemberByIdAndDeletedAtIsNull(memberId)
                 .orElseThrow(() -> new BusinessException(CommonErrorCode.USER_NOT_FOUND));
     }
 
-    public <T, R extends JpaRepository<T, Long>> T getEntityById(Long id, R jpaRepository) {
-        return jpaRepository.findById(id)
+    private List<ProductImage> findProductImageList(Product product) {
+        return productImageRepository.findByProduct(product).orElse(new ArrayList<>());
+    }
+
+    private List<Category> findCategoryList(Product product) {
+        return categoryRepository.findByProduct(product)
                 .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.ENTITY_NOT_FOUND));
+    }
+
+    private List<Category> saveCategories(ProductPostDTO productPostDTO, Product product) {
+        List<Category> savedCategories = new ArrayList<>();
+        productPostDTO.categories().forEach(categoryType ->
+                savedCategories.add(categoryRepository.save(
+                        Category.builder()
+                                .categoryName(CategoryType.valueOf(categoryType.name()))
+                                .product(product)
+                                .build())
+
+                )
+        );
+        return savedCategories;
+    }
+
+    private List<ProductImage> saveProductImages(ProductPostDTO productPostDTO, Product product) {
+        List<ProductImage> savedImages = new ArrayList<>();
+
+        if (productPostDTO.images() != null && !productPostDTO.images().isEmpty()) {
+            productPostDTO.images().forEach(multipartFile -> {
+                if (!multipartFile.isEmpty()) {
+                    savedImages.add(productImageRepository.save(
+                            ProductImage.builder()
+                                    .product(product)
+                                    .ext(multipartFile.getContentType())
+                                    .name(multipartFile.getOriginalFilename())
+                                    .url("url")
+                                    .status("status")
+                                    .build())
+                    );
+                }
+            });
+        }
+        return savedImages;
     }
 }
