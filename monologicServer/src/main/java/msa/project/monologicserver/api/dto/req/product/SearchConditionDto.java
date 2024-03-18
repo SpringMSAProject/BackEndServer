@@ -1,25 +1,13 @@
 package msa.project.monologicserver.api.dto.req.product;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import msa.project.monologicserver.domain.product.entity.CategoryList;
+import msa.project.monologicserver.domain.product.entity.SortType;
 
 public record SearchConditionDto (
-        @NotNull @Size(min = 0) int page,
         String keyword,
-        boolean isCategoryDesc,
-        boolean isViewCountDesc,
-        boolean isLikeDesc,
-        boolean isUpdateDesc
+        @NotBlank CategoryList categoryType,
+        @NotBlank SortType sortType,
+        boolean isDesc
 ) {
-    @Override
-    public String toString() {
-        return "SearchConditionDto{" +
-                "page=" + page +
-                ", keyword='" + keyword + '\'' +
-                ", isCategoryDesc=" + isCategoryDesc +
-                ", isViewCountDesc=" + isViewCountDesc +
-                ", isLikeDesc=" + isLikeDesc +
-                ", isUpdateDesc=" + isUpdateDesc +
-                '}';
-    }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/product")
 @RequiredArgsConstructor
 @Tag(name = "상품", description = "swagger Test 상품")
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
@@ -31,6 +32,7 @@ public class ProductController {
             @PathVariable String memberId,
             @Valid @ModelAttribute ProductPostDTO productPostDTO
     ) {
+        log.info("====\n", productPostDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(productService.createProduct(memberId, productPostDTO)));
     }

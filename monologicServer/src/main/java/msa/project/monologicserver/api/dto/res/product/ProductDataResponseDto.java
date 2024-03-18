@@ -18,13 +18,13 @@ public record ProductDataResponseDto(
         StatusType status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        List<CategoryType> categoryTypes,
+        List<CategoryList> categoryTypes,
         List<String> url
 ) {
     public static ProductDataResponseDto toProductDataResponseDto(Product product, List<Category> categories, List<ProductImage> productImage) {
 
-        List<CategoryType> categoriesNameList = new ArrayList<>();
-        categories.forEach(c -> categoriesNameList.add(CategoryType.valueOf(String.valueOf(c.getCategoryName()))));
+        List<CategoryList> categoriesNameList = new ArrayList<>();
+//        categories.forEach(c -> categoriesNameList.add(CategoryList.valueOf(String.valueOf(c.getCategoryName()))));
 
         List<String> urlList = new ArrayList<>();
         productImage.forEach(img -> urlList.add(img.getUrl()));

@@ -29,7 +29,7 @@ public class Product extends BaseTimeEntity {
     private String title;
 
     @Lob
-    @Column(name = "description")
+    @Column(columnDefinition = "text")
     private String description;
 
     private int price;
@@ -39,6 +39,9 @@ public class Product extends BaseTimeEntity {
     private int likeCount = 0;
 
     private String location;
+
+    @Enumerated(EnumType.STRING)
+    private CategoryList.MainCategory mainCategory;
 
     @Enumerated(EnumType.STRING)
     private ConditionType condition;
@@ -57,12 +60,13 @@ public class Product extends BaseTimeEntity {
     }
 
     @Builder
-    public Product(Member memberId, String title, String description, int price, String location, ConditionType condition, StatusType status, String thumbImg) {
+    public Product(Member memberId, String title, String description, int price, String location, CategoryList.MainCategory mainCategory, ConditionType condition, StatusType status, String thumbImg) {
         this.memberId = memberId;
         this.title = title;
         this.description = description;
         this.price = price;
         this.location = location;
+        this.mainCategory = mainCategory;
         this.condition = condition;
         this.status = status;
         this.thumbImg = thumbImg;

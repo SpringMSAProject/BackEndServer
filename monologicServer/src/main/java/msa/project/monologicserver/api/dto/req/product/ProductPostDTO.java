@@ -1,13 +1,13 @@
 package msa.project.monologicserver.api.dto.req.product;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import msa.project.monologicserver.domain.member.Member;
+import msa.project.monologicserver.domain.product.entity.CategoryList;
+import msa.project.monologicserver.domain.product.entity.CategoryList.MainCategory;
 import msa.project.monologicserver.domain.product.entity.ConditionType;
-import msa.project.monologicserver.domain.product.entity.CategoryType;
 import msa.project.monologicserver.domain.product.entity.Product;
 import msa.project.monologicserver.domain.product.entity.StatusType;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +24,12 @@ public record ProductPostDTO(
 
     List<MultipartFile> images,
 
+    @NotNull MainCategory mainCategory,
+
     @Valid
     @NotNull
     @Size(min = 1)
-    List<CategoryType> categories
-
+    List<CategoryList> categories
 
 ) {
     public Product of(Member member) {
@@ -47,6 +48,7 @@ public record ProductPostDTO(
                 .location(this.location)
                 .condition(this.condition)
                 .status(this.status)
+                .mainCategory(this.mainCategory)
                 .thumbImg(thumbImg)
                 .build();
     }

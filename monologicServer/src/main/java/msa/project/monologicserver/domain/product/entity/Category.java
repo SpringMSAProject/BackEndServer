@@ -16,15 +16,19 @@ public class Category {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private CategoryType categoryName;
+    private CategoryList.MainCategory mainCategory;
+
+    @Enumerated(EnumType.STRING)
+    private CategoryList subCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @Builder
-    public Category(CategoryType categoryName, Product product) {
-        this.categoryName = categoryName;
+    public Category(CategoryList.MainCategory mainCategory, CategoryList subCategory, Product product) {
+        this.mainCategory = mainCategory;
+        this.subCategory = subCategory;
         this.product = product;
     }
 }

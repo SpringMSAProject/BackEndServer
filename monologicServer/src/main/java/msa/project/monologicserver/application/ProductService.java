@@ -33,6 +33,8 @@ public class ProductService {
     @Transactional
     public ProductDataResponseDto createProduct(String memberId, ProductPostDTO productPostDTO) {
 
+        CategoryList.MainCategory mainCategory = includeInMainCategory(productPostDTO);
+
         if (productPostDTO.status() != null && productPostDTO.status() != StatusType.PRE) {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
         }
@@ -75,9 +77,8 @@ public class ProductService {
                         productImageList);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<SearchData> readAll(SearchConditionDto searchConditionDto, Pageable pageable) {
-
         return productRepository.readAll(searchConditionDto, pageable);
     }
 
@@ -152,13 +153,13 @@ public class ProductService {
 
     private List<Category> saveCategories(ProductPostDTO productPostDTO, Product product) {
         List<Category> savedCategories = new ArrayList<>();
-        productPostDTO.categories().forEach(categoryType ->
+        productPostDTO.categories().forEach(categoryList ->
                 savedCategories.add(categoryRepository.save(
                         Category.builder()
-                                .categoryName(CategoryType.valueOf(categoryType.name()))
+                                .mainCategory(product.getMainCategory())
+                                .subCategory(CategoryList.valueOf(categoryList.name()))
                                 .product(product)
                                 .build())
-
                 )
         );
         return savedCategories;
@@ -183,5 +184,14 @@ public class ProductService {
             });
         }
         return savedImages;
+    }
+
+    public CategoryList.MainCategory includeInMainCategory(ProductPostDTO productPostDTO) {
+        for (CategoryList category : productPostDTO.categories()) {
+            if (category.getMainCategory().equals(productPostDTO.mainCategory())) {
+                return productPostDTO.mainCategory();
+            }
+        }
+        throw new BusinessException(CommonErrorCode.BAD_REQUEST);
     }
 }
