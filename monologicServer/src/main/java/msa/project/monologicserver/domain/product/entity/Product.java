@@ -91,6 +91,7 @@ public class Product extends BaseTimeEntity {
         this.location = productRegisterDTO.location();
         this.condition = productRegisterDTO.condition();
         this.status = productRegisterDTO.status();
+        this.mainCategory = productRegisterDTO.mainCategory();
 
         if (productRegisterDTO.images().size() > 0) {
             MultipartFile firstFile = productRegisterDTO.images().get(0);

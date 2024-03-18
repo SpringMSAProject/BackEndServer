@@ -14,11 +14,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+#        show_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
         highlight_sql: true
     open-in-view: false

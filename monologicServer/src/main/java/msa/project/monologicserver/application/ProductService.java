@@ -33,7 +33,7 @@ public class ProductService {
     @Transactional
     public ProductDataResponseDto createProduct(String memberId, ProductPostDTO productPostDTO) {
 
-        CategoryList.MainCategory mainCategory = includeInMainCategory(productPostDTO);
+        includeInMainCategory(productPostDTO);
 
         if (productPostDTO.status() != null && productPostDTO.status() != StatusType.PRE) {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
@@ -56,6 +56,8 @@ public class ProductService {
 
     @Transactional
     public ProductDataResponseDto updateProduct(Long productId, ProductPostDTO productPostDTO) {
+
+        includeInMainCategory(productPostDTO);
 
         if (productPostDTO.status() == null) {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
