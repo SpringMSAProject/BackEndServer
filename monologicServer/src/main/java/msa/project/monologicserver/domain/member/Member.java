@@ -43,14 +43,10 @@ public class Member extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;
 
-    //
-
-
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @PrimaryKeyJoinColumn
     @Setter
     private MemberProfile memberProfile;
-
 
     @Builder
     public Member(String email, String password){

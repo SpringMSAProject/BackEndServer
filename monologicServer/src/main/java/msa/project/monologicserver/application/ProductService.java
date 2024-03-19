@@ -1,6 +1,7 @@
 package msa.project.monologicserver.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import msa.project.monologicserver.api.dto.req.product.ProductPostDTO;
 import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.api.dto.res.product.ProductDataResponseDto;
@@ -16,12 +17,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -33,7 +42,7 @@ public class ProductService {
     @Transactional
     public ProductDataResponseDto createProduct(String memberId, ProductPostDTO productPostDTO) {
 
-        includeInMainCategory(productPostDTO);
+        checkMainCategoryIncludedInCategories(productPostDTO);
 
         if (productPostDTO.status() != null && productPostDTO.status() != StatusType.PRE) {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
@@ -43,7 +52,6 @@ public class ProductService {
         Product product = productPostDTO.of(member);
 
         productRepository.save(product);
-
         List<Category> categoryList = saveCategories(productPostDTO, product);
         List<ProductImage> productImageList = saveProductImages(productPostDTO, product);
 
@@ -57,7 +65,7 @@ public class ProductService {
     @Transactional
     public ProductDataResponseDto updateProduct(Long productId, ProductPostDTO productPostDTO) {
 
-        includeInMainCategory(productPostDTO);
+        checkMainCategoryIncludedInCategories(productPostDTO);
 
         if (productPostDTO.status() == null) {
             throw new BusinessException(CommonErrorCode.BAD_REQUEST);
@@ -171,24 +179,49 @@ public class ProductService {
         List<ProductImage> savedImages = new ArrayList<>();
 
         if (productPostDTO.images() != null && !productPostDTO.images().isEmpty()) {
+
+            String uploadDir = System.getProperty("user.dir") + "/user_uploads/" + product.getMember().getId();
+            File dir = new File(uploadDir);
+            if (!dir.exists()){
+                dir.mkdirs();
+            }
+
             productPostDTO.images().forEach(multipartFile -> {
-                if (!multipartFile.isEmpty()) {
-                    savedImages.add(productImageRepository.save(
-                            ProductImage.builder()
-                                    .product(product)
-                                    .ext(multipartFile.getContentType())
-                                    .name(multipartFile.getOriginalFilename())
-                                    .url("url")
-                                    .status("status")
-                                    .build())
-                    );
+                try {
+                    //TODO 배치로 일정 기간이 지나면 파일 자동 삭제
+                    String originalFilename = multipartFile.getOriginalFilename();
+                    String ext = "." + originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                    String savedFilename = UUID.randomUUID() + ext;
+
+                    String filePath = Paths.get(uploadDir, savedFilename).toString();
+                    byte[] bytes = multipartFile.getBytes();
+                    Path path = Paths.get(filePath);
+                    Files.write(path, bytes);
+
+                    if (!multipartFile.isEmpty()) {
+                        savedImages.add(productImageRepository.save(
+                                ProductImage.builder()
+                                        .product(product)
+                                        .ext(multipartFile.getContentType())
+                                        .originalFilename(originalFilename)
+                                        .savedFilename(savedFilename)
+                                        .url(filePath)
+                                        .status("status")
+                                        .build())
+                        );
+                    }
+                } catch (IOException e) {
+                    log.error("file upload error: {}", e.getMessage());
+                    new BusinessException(CommonErrorCode.BAD_REQUEST);
                 }
+
             });
         }
+
         return savedImages;
     }
 
-    public CategoryList.MainCategory includeInMainCategory(ProductPostDTO productPostDTO) {
+    public CategoryList.MainCategory checkMainCategoryIncludedInCategories(ProductPostDTO productPostDTO) {
         for (CategoryList category : productPostDTO.categories()) {
             if (category.getMainCategory().equals(productPostDTO.mainCategory())) {
                 return productPostDTO.mainCategory();

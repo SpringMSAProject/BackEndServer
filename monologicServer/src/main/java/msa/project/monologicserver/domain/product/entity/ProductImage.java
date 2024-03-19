@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import msa.project.monologicserver.global.entity.BaseTimeEntity;
 
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,7 +21,8 @@ public class ProductImage extends BaseTimeEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private String name;
+    private String originalFilename;
+    private String savedFilename;
 
     //확장자
     private String ext;
@@ -35,9 +34,10 @@ public class ProductImage extends BaseTimeEntity {
     private String deletedAt;
 
     @Builder
-    public ProductImage(Product product, String name, String ext, String url, String status, String deletedAt) {
+    public ProductImage(Product product, String originalFilename,String savedFilename, String ext, String url, String status, String deletedAt) {
         this.product = product;
-        this.name = name;
+        this.originalFilename = originalFilename;
+        this.savedFilename = savedFilename;
         this.ext = ext;
         this.url = url;
         this.status = status;

@@ -24,7 +24,7 @@ public class Product extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memberId;
+    private Member member;
 
     private String title;
 
@@ -60,8 +60,8 @@ public class Product extends BaseTimeEntity {
     }
 
     @Builder
-    public Product(Member memberId, String title, String description, int price, String location, CategoryList.MainCategory mainCategory, ConditionType condition, StatusType status, String thumbImg) {
-        this.memberId = memberId;
+    public Product(Member member, String title, String description, int price, String location, CategoryList.MainCategory mainCategory, ConditionType condition, StatusType status, String thumbImg) {
+        this.member = member;
         this.title = title;
         this.description = description;
         this.price = price;

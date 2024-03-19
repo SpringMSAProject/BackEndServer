@@ -41,7 +41,7 @@ public record ProductPostDTO(
         }
 
         return Product.builder()
-                .memberId(member)
+                .member(member)
                 .title(this.title)
                 .description(this.description)
                 .price(this.price)

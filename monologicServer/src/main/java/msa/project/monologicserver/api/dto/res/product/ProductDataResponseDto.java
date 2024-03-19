@@ -31,8 +31,8 @@ public record ProductDataResponseDto(
 
         return new ProductDataResponseDto(
                 product.getProductId(),
-                product.getMemberId().getId(),
-                product.getMemberId().getMemberProfile().getNickname(),
+                product.getMember().getId(),
+                product.getMember().getMemberProfile().getNickname(),
                 product.getTitle(),
                 product.getDescription(),
                 product.getPrice(),
