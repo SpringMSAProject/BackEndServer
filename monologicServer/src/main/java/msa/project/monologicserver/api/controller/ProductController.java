@@ -10,6 +10,7 @@ import msa.project.monologicserver.api.dto.req.product.SearchConditionDto;
 import msa.project.monologicserver.application.ProductService;
 import msa.project.monologicserver.global.ApiResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,9 @@ public class ProductController {
 
     @PostMapping("/")
     @Operation(summary = "R", description = "모든 상품 조회")
-    public ResponseEntity<?> readAll(@RequestBody SearchConditionDto searchConditionDto, Pageable pageable) {
+    public ResponseEntity<?> readAll
+            (@RequestBody SearchConditionDto searchConditionDto,
+             @PageableDefault Pageable pageable) {
         return ResponseEntity
                 .ok(ApiResponse.success(productService.readAll(searchConditionDto, pageable)));
     }

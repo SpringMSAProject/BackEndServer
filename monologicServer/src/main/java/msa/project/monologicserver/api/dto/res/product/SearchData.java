@@ -11,7 +11,6 @@ public record SearchData(
         String title,
         int price,
         LocalDateTime updateAt
-
 ) {
 
     @QueryProjection

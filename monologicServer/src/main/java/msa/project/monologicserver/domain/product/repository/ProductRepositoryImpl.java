@@ -36,46 +36,17 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport  implements
         super(Product.class);
         this.queryFactory = queryFactory;
     }
-//    private final QProduct product = QProduct.product;
-//    private final QCategory category = QCategory.category;
-//    private final QLike like = QLike.like;
-//    String keyword,
-//    boolean isCategoryDesc,
-//    boolean isViewCountDesc,
-//    boolean isLikeDesc,
-//    boolean isUpdateDesc
-
 
     @Override
     public Page<SearchData> readAll(SearchConditionDto searchConditionDto, Pageable pageable) {
 
-        JPAQuery<SearchData> query = queryFactory
-                .select(
-                        new QSearchData(product.title,
-                                product.price,
-                                product.updatedAt))
-                .from(product);
-
-        if (searchConditionDto.categoryType() != null && searchConditionDto.categoryType().equals("")) {
-//            query.leftJoin(product, category.product)
-//                    .on(category.categoryName.eq(searchConditionDto.categoryType()));
-        }
-
         BooleanBuilder builder = new BooleanBuilder();
-        if (searchConditionDto.keyword() != null && !searchConditionDto.keyword().isEmpty()) {
-            String keyword = searchConditionDto.keyword();
-            BooleanExpression titleContainsKeyword = product.title.contains(keyword);
-            BooleanExpression descriptionContainsKeyword = Expressions.booleanTemplate(
-                    "position(?1 in cast(product.description as text)) > 0", keyword);
-            builder.and(titleContainsKeyword)
-                    .or(descriptionContainsKeyword);
-
-            if (searchConditionDto.categoryType() != null && searchConditionDto.categoryType().equals("")) {
-//                BooleanExpression categoryEqName = QCategory.category.categoryName.eq(searchConditionDto.categoryType());
-//                builder.and(categoryEqName);
-            }
+        if (searchConditionDto.keyword() != null) {
+            builder.and(product.title.contains(searchConditionDto.keyword()));
         }
-        query.where(builder);
+        if (searchConditionDto.category() != null && !searchConditionDto.category().equals("")) {
+            builder.and(product.mainCategory.eq(CategoryList.MainCategory.valueOf(searchConditionDto.category())));
+        }
 
         OrderSpecifier<?> descCondition =
                 Optional.ofNullable(searchConditionDto.isDesc())
@@ -94,18 +65,26 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport  implements
                     break;
             }
         }
-        List<SearchData> content = query.orderBy(descCondition)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
 
-        Long countQuery = queryFactory
-                .select(Wildcard.count)
+        List<SearchData> contents = queryFactory
+                .select(
+                        new QSearchData(product.title,
+                                product.price,
+                                product.updatedAt))
                 .from(product)
                 .where(builder)
+                .orderBy(descCondition)
+                .offset(searchConditionDto.pageOffset())
+                .limit(searchConditionDto.pageSize())
+                .fetch();
+
+        Long count = queryFactory
+                .select(Wildcard.count)
+                .from(product)
+                .where(builder) // Use BooleanBuilder
                 .fetchOne();
 
-        return new PageImpl<>(content, pageable, countQuery);
+        return new PageImpl<>(contents, pageable, count);
     }
 
 }
