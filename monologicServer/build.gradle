@@ -61,3 +61,14 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+/* gradle script 추가 */
+// compile 시점 generated 경로에 querydsl QClass 메타데이터 생성
+def generated = 'src/main/generated'
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+// clean 시점에 generated 경로에 querydsl QClass 메타데이터 삭제
+clean {
+    delete file(generated)
+}
