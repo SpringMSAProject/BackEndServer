@@ -33,7 +33,6 @@ public class ProductController {
             @PathVariable String memberId,
             @Valid @ModelAttribute ProductPostDTO productPostDTO
     ) {
-        log.info("====\n", productPostDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(productService.createProduct(memberId, productPostDTO)));
     }
@@ -55,22 +54,14 @@ public class ProductController {
                 .ok(ApiResponse.success(productService.readProduct(productId)));
     }
 
-
-    @PostMapping("/")
-    @Operation(summary = "R", description = "모든 상품 조회")
+    @GetMapping
+    @Operation(summary = "R", description = "모든 상품 조회 (페이징, 검색조건, 정렬)")
     public ResponseEntity<?> readAll
-            (@RequestBody SearchConditionDto searchConditionDto,
+            (SearchConditionDto searchConditionDto,
              @PageableDefault Pageable pageable) {
         return ResponseEntity
                 .ok(ApiResponse.success(productService.readAll(searchConditionDto, pageable)));
     }
-
-//    @GetMapping("/categories/{categoryId}")
-//    @Operation(summary = "R", description = "카테고리별 모든 상품 조회")
-//    public ResponseEntity<?> readByCategory(Pageable pageable, @PathVariable Long categoryId) {
-//        return ResponseEntity
-//                .ok(ApiResponse.success(productService.readByCategory(pageable, categoryId)));
-//    }
 
     @PostMapping("/{productId}/{memberId}")
     @Operation(summary = "RU", description = "상품 좋아요")

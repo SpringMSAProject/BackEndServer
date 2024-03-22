@@ -9,7 +9,12 @@ import msa.project.monologicserver.api.dto.res.product.SearchData;
 import msa.project.monologicserver.domain.member.Member;
 import msa.project.monologicserver.domain.member.MemberRepository;
 import msa.project.monologicserver.domain.product.entity.*;
-import msa.project.monologicserver.domain.product.repository.*;
+import msa.project.monologicserver.domain.product.repository.CategoryRepository;
+import msa.project.monologicserver.domain.product.repository.LikeRepository;
+import msa.project.monologicserver.domain.product.repository.ProductImageRepository;
+import msa.project.monologicserver.domain.product.repository.ProductRepository;
+import msa.project.monologicserver.global.entity.OrderSpec;
+import msa.project.monologicserver.global.entity.SortSpec;
 import msa.project.monologicserver.global.error.code.CommonErrorCode;
 import msa.project.monologicserver.global.error.exception.BusinessException;
 import org.springframework.data.domain.Page;
@@ -22,10 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -87,8 +89,12 @@ public class ProductService {
                         productImageList);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<SearchData> readAll(SearchConditionDto searchConditionDto, Pageable pageable) {
+        validationCategoryCond(searchConditionDto.category());
+        validationSortCond(searchConditionDto.sort());
+        validationOrderCond(searchConditionDto.order());
+
         return productRepository.readAll(searchConditionDto, pageable);
     }
 
@@ -134,12 +140,6 @@ public class ProductService {
                         product,
                         categoryList,
                         productImages);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ProductDataResponseDto> readByCategory(Pageable pageable, Long category) {
-
-        return null;
     }
 
     private Member findMemberById(String memberId) {
@@ -228,5 +228,28 @@ public class ProductService {
             }
         }
         throw new BusinessException(CommonErrorCode.BAD_REQUEST);
+    }
+
+    private void validationCategoryCond(String category) {
+        if (category != null && !category.equals("")) {
+            Optional.ofNullable(Arrays.stream(CategoryList.MainCategory.values())
+                    .filter(c -> c.name().equals(category))
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(CommonErrorCode.BAD_REQUEST)));
+        }
+    }
+
+    public void validationSortCond(String sort) {
+        Optional.ofNullable(Arrays.stream(SortSpec.values())
+                .filter(s -> s.name().equals(sort))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.BAD_REQUEST)));
+    }
+
+    public void validationOrderCond(String order) {
+        Optional.ofNullable(Arrays.stream(OrderSpec.values())
+                .filter(o -> o.name().equals(order))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(CommonErrorCode.BAD_REQUEST)));
     }
 }

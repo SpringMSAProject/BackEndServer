@@ -10,13 +10,17 @@ import java.time.LocalDateTime;
 public record SearchData(
         String title,
         int price,
+        int like,
+        int viewCount,
         LocalDateTime updateAt
 ) {
 
     @QueryProjection
-    public SearchData(String title, int price, LocalDateTime updateAt) {
+    public SearchData(String title, int price, int like, int viewCount, LocalDateTime updateAt) {
         this.title = title;
         this.price = price;
+        this.like = like;
+        this.viewCount = viewCount;
         this.updateAt = updateAt;
     }
 }
